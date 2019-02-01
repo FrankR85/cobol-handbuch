@@ -1,0 +1,8 @@
+@startuml
+digraph g {
+    a -> b
+    b -> c
+    c -> d
+    d -> a
+}
+@enduml
