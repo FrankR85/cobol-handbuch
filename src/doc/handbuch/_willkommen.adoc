@@ -1,0 +1,32 @@
+== DISPLAY "Hallo Münster!"
+
+Wir schreiben das Jahr 2018 - warum sollten wir jetzt noch COBOL lernen?
+
+[caption="COBOL von meiner Mutter!",link=https://twitter.com/grauhut/status/1000017084435312642]
+image::twitter_mutter_cobol.jpg[]
+
+=== Einige Fakten
+
+* COBOL läuft bei 90% der Fortune 500 Firmen im täglichen Einsatz
+* 70% der kritischen Geschäftslogik dieser Firmen ist in COBOL
+* COBOL läuft bei 80% aller Point-of-sale Transaktionen
+
+Quelle: <<mf>>
+
+=== Und nun?
+In regelmäßigen Abständen erscheinen Artikel wie diese:
+[caption="COBOL im Manager Magazin!",link=http://www.manager-magazin.de/unternehmen/artikel/us-banken-brauchen-it-kraefte-manager-holen-cobol-veteranen-zurueck-a-1143632.html]
+image::manager_magazin_ruhestand.jpg[]
+[quote, Anna Irrera, 'Manager Magazin: http://www.manager-magazin.de/unternehmen/artikel/us-banken-brauchen-it-kraefte-manager-holen-cobol-veteranen-zurueck-a-1143632.html[US-Banken holen IT-Kräfte aus Ruhestand zurück]']
+____
+Cobol ist aus großen Banken, Konzernen und Teilen der US-Regierung nicht wegzudenken.
+Vor allem für die Finanzbranche hat die Uralt-Programmiersprache eine große Bedeutung.
+____
+
+
+[TIP]
+====
+Schlecht für die Firmen, gut für die COBOL-Programmierer!
+
+image:dilbert-cobol.jpg[]
+====

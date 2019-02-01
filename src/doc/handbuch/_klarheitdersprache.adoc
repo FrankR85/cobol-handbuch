@@ -1,0 +1,107 @@
+=== Klarheit der Sprache [[klarheitdersprache]]
+*COBOL* steht für _**Co**mmon **B**usiness **O**riented **L**anguage_ und hat in
+diesem Sinne den Anspruch, möglichst lesbar zu sein.
+[NOTE]
+====
+Die Lesbarkeit und Verständlichkeit ist **COBOL**s große Stärke. Es gibt wenige
+Programmiersprachen, in denen die tatsächliche Geschäftslogik derart sprechend
+ablesbar ist.
+====
+In einer <<aufgaben.adoc#mwstaufgabe,Übungsaufgabe>> haben wir einen Mehrwertsteuer-Rechner implementiert.
+Zur Erinnerung hier nochmal der Code:
+[source,cobol]
+----
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. MWST.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+
+       WORKING-STORAGE SECTION.
+        01  NETTO-BETRAG           PIC 999V99.
+        01  BRUTTO-BETRAG          PIC 999.99.
+        01  MWST                   PIC V999 VALUE .19.
+
+       PROCEDURE DIVISION.
+           PERFORM CALCULATE-MWST
+           GOBACK
+           .
+       CALCULATE-MWST SECTION.
+           COMPUTE BRUTTO-BETRAG ROUNDED
+                 = NETTO-BETRAG * (1 + MWST)
+           .
+           EXIT.
+
+       END PROGRAM MWST.
+----
+
+Wir schauen uns jetzt eine mögliche Implementierung der gleichen Funktionalität
+in Java an.
+
+==== Mehrwertsteuer in Java [[klarheitdersprachejava]]
+Wir sparen uns jetzt die schrittweise Implementierung sondern schauen
+uns direkt die Testfälle und die zugehörige Implementierung an:
+
+[source,java]
+----
+class MehrwertsteuerRechnerTest {
+
+  @Test
+  void testNettoBetragVon0EURist0EUR() {
+    MehrwertsteuerRechner rechner = new MehrwertsteuerRechner();
+    BigDecimal bruttoBetrag = rechner.berechneNettoBetrag(BigDecimal.ZERO);
+    assertThat(bruttoBetrag.compareTo(BigDecimal.ZERO), is(0));
+  }
+
+  @Test
+  void testNettoBetragVon100EURist119EUR() {
+    MehrwertsteuerRechner rechner = new MehrwertsteuerRechner();
+    BigDecimal eur100 = new BigDecimal(100L);
+    BigDecimal eur119 = new BigDecimal(119L);
+    BigDecimal bruttoBetrag = rechner.berechneNettoBetrag(eur100);
+    assertThat(bruttoBetrag.compareTo(eur119), is(0));
+  }
+
+  @Test
+  void testNettoBetragVon1Eur99Centist2Eur37Cent() {
+    MehrwertsteuerRechner rechner = new MehrwertsteuerRechner();
+    BigDecimal eur1cent99 = new BigDecimal(1.99d);
+    BigDecimal eur2cent37 = new BigDecimal(2.37d).setScale(2, RoundingMode.HALF_UP);
+    BigDecimal bruttoBetrag = rechner.berechneNettoBetrag(eur1cent99);
+    assertThat(bruttoBetrag.compareTo(eur2cent37), is(0));
+  }
+
+}
+----
+Die Klasse ```MehrwertsteuerRechner``` sieht so aus:
+[source,java]
+----
+public class MehrwertsteuerRechner {
+  private static final int ANZAHL_NACHKOMMASTELLEN = 2;
+  private static BigDecimal MWST = new BigDecimal(0.19d);
+
+  public BigDecimal berechneNettoBetrag(BigDecimal bruttoBetrag) {
+    return bruttoBetrag.multiply(MWST.add(BigDecimal.ONE))
+        .setScale(ANZAHL_NACHKOMMASTELLEN, RoundingMode.HALF_UP);
+  }
+}
+----
+Die Implementierung des Mehrwersteuer-Rechners ist in Java durchaus kürzer, aber
+ist sie auch verständlicher?
+[TIP]
+====
+Man vergleiche die Mehrwertsteuer-Logik in Java:
+
+[source,java]
+----
+return bruttoBetrag.multiply(MWST.add(BigDecimal.ONE))
+    .setScale(ANZAHL_NACHKOMMASTELLEN, RoundingMode.HALF_UP);
+----
+
+mit der von COBOL:
+
+[source,cobol]
+----
+COMPUTE BRUTTO-BETRAG ROUNDED = NETTO-BETRAG * (1 + MWST)
+----
+
+====

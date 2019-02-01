@@ -1,0 +1,61 @@
+== Was ist COBOL denn nun eigentlich?
+
+Eine vom amerikanischen Verteidigungsministerium eingesetze Arbeitsgruppe unter
+Leitung von https://de.wikipedia.org/wiki/Grace_Hopper[Grace Hopper] verabschiedete
+1960 https://de.wikipedia.org/wiki/CODASYL[CODASYL], welches als *COBOL-60* bekannt wurde
+und stets weiterentwickelt wurde.
+
+=== Hallo Welt!
+Da es zum guten Ton gehört eine Programmiersprache mit einem "Hallo Welt!"-Gruß einzuführen und COBOL nicht dafür bekannt ist mit Traditionen zu brechen, sagen wir zuerst *Hallo Welt!*
+[source,cobol]
+----
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. halloWelt. // <1>
+       PROCEDURE DIVISION.
+        DISPLAY "Hallo Welt!".
+       STOP RUN.
+----
+<1> Der Programmname
+
+Hierbei ist zu beachten, dass die meisten Legacy-COBOL Anwendungen im *fixed format* geschrieben sind. Das bedeutet, es ist wichtig, auf welcher Spalte ein Befehl oder Zeichen steht:
+
+=== Ein Format sie zu knechten [[fixedformat]]
+
+[source,cobol]
+----
+                                                                       //<1>
+------*A---B---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+-------
+      * Eine Kommentarzeile // <2>
+       IDENTIFICATION DIVISION. // <3>
+       PROGRAM-ID. halloWelt.                                           DOKU
+       PROCEDURE DIVISION.
+        DISPLAY "Hallo Welt!".
+       STOP RUN.
+----
+<1> Die Spalten 73 bis 80 werden vom Compiler ignoriert und können zu Dokumentationszwecken genutzt werden.
+<2> Eine Kommentarzeile wird durch einen `*` in Spalte 7, der _Indikatorspalte_, erkannt.
+<3> Eine *DIVISION* beginnt in _Area A_, dem Bereich von Spalte 8 bis Spalte 11. Ebenso *SECTION Namen* und *PARAGRAPH Namen*.
+
+Der GnuCOBOL-Compiler unterstützt zusätzlich noch so einen _modernen_ Modus, den *Free-Format Mode*.
+Dabei sind die Einrückungen dann egal und man kann *Hallo Welt!* noch prägnanter schreiben:
+[source,cobol]
+----
+program-id.hello.procedure division.display "Hallo Welt!".
+----
+Wem das noch nicht kurz genug ist, nimmt die definitiv kürzeste Variante:
+[source,cobol]
+----
+display"Hallo Welt!".
+----
+Das soll ein gültiges COBOL-Programm sein? Schauen wir uns an, was ```cobc``` macht, wenn wir den Schalter ```frelax-syntax``` setzen:
+[source,bash]
+----
+$ cobc -x -frelax-syntax -free hallo.cob
+hallo.cob: 1: Warning: PROGRAM-ID header missing - assumed
+hallo.cob: 1: Warning: PROCEDURE DIVISION header missing - assumed
+----
+[NOTE]
+====
+Da praktisch jede Legacy-COBOL Anwendung im ```fixed format``` geschrieben ist,
+werden wir das ```free format``` sofort wieder vergessen.
+====

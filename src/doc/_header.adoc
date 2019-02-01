@@ -1,0 +1,12 @@
+Christoph Gerdes <christoph.gerdes@gad.de>; Frank Rehfeldt <frank.rehfeldt@gad.de>
+v0.0.0.1, Irgendwann 2018
+:source-highlighter: highlightjs
+:highlightjsdir: highlight
+:imagesdir-src: images
+:toclevels: 6
+:sectnums:
+:sectnumlevels: 9
+:xrefstyle: short
+:handbuchdir: handbuch
+:example-caption: Beispiel
+:toc-title: COBOL-Handbuch

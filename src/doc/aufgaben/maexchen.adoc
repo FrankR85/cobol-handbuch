@@ -1,0 +1,42 @@
+:source-highlighter: highlightjs
+:highlightjsdir: highlight
+
+== Mäxchen
+
+=== Teilnehmen an einem Spiel
+
+Im Mäxchen-Verzeichnis gibt es eine minimale, unvollständige
+Bot-Implementierung```SIMPLBOT.cbl```. Diese Datei kann als Kopiervorlage für
+einen beliebigen Bot genutzt werden.
+
+Nachdem der Bot kompiliert wurde, z.Bsp. mit
+
+ $ cobc -m -std=ibm -I src/copy -o target/SIMPLBOT.so src/SIMPLBOT.CBL
+
+liegt das Object-Modul im ```target```-Ordner.
+
+Nun kann der Bot an einem Spiel teilnehmen:
+
+ $ cd target
+ $ ./CLIENT server_ip server_port BotName SIMPLBOT
+
+Hierbei müssen für ```server_ip``` und ```server_port``` die Daten des Mia-Servers
+angegeben werden. Der Parameter ```BotName``` gibt dem Bot einen Spitznamen, mit welchem
+er dann in der Rangliste erscheint.
+
+Der letzte Parameter, hier ```SIMPLBOT``` entscheidet, welcher Bot genutzt werden soll.
+Hier ist der Name des *COBOL*-Programms einzutragen, welches die Bot-Logik enthält.
+
+[TIP]
+====
+Wenn ihr ```Vagrant``` benutzt und den Mia-Server auf dem Host-System laufen habt, lässt sich
+die IP-Adresse des Host so ermitteln:
+
+ $ ip route show
+ > default via 10.0.2.2 dev eth0
+ 10.0.2.0/24 dev eth0  proto kernel  scope link  src 10.0.2.15
+
+Hier wäre ```10.0.2.2``` die IP-Adresse des Servers.
+====
+
+=== Starten eines Mäxchen-Servers

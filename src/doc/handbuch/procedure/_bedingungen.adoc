@@ -1,0 +1,209 @@
+==== Bedingungen
+
+Natürlich gibt es auch in *COBOL* die aus anderen Sprachen bekannten
+**IF-Abfragen**.
+
+===== IF-Abfragen
+Nehmen wir unseren ```BENUTZER``` aus dem vorherigen Kapitel:
+[source,cobol]
+----
+01 BENUTZER.
+ 05 VORNAME        PIC X(30).
+ 05 B-ALTER         PIC 999.
+ 05 BSTATUS        PIC X VALUE SPACE.
+   88 NORMAL             VALUE SPACE.
+   88 PREMIUM            VALUE 'P'.
+   88 GESPERRT           VALUE 'G'.
+----
+Dann können wir in unserem Programm z.Bsp. diese Bedingungen formulieren:
+[source,cobol]
+----
+IF VORNAME = "Michael" THEN
+   DISPLAY "Hallo Michael!"
+END-IF
+----
+Oder auch mit einem ```ELSE-Zweig```:
+[source,cobol]
+----
+IF VORNAME = "Michael" THEN
+  DISPLAY "Hallo Michael!"
+ELSE
+  DISPLAY "Hallo, jemand anderes als Michael!"
+END-IF
+----
+In *COBOL* gibt es kein Zeichen für *ungleich*, sondern man muss das
+Schlüsselwort ```NOT``` benutzen:
+[source,cobol]
+----
+IF VORNAME NOT = "Michael" THEN
+  DISPLAY "Hallo, jemand anderes als Michael!"
+ELSE
+  DISPLAY "Hallo Michael!"
+END-IF
+----
+
+===== IF-Abfragen mit AND und OR
+
+Schauen wir uns an, wie nützlich die ```88-iger``` Stufen sind.
+Wollen wir überprüfen, ob ein ```BENUTZER``` den Status ```GESPERRT``` hat,
+so schreiben wir:
+[source,cobol]
+----
+IF GESPERRT THEN
+  DISPLAY "Benutzer ist gesperrt"
+END-IF
+----
+Oder analog:
+[source,cobol]
+----
+IF NOT GESPERRT THEN
+DISPLAY "Benutzer ist nicht gesperrt"
+END-IF
+----
+Man kann Bedingungen auch mittels ```OR``` verknüpfen:
+[source,cobol]
+----
+IF NORMAL OR PREMIUM THEN
+  DISPLAY "Hallo aktiver Benutzer!"
+END-IF
+----
+Oder mittels ```AND```:
+[source,cobol]
+----
+IF PREMIUM AND B-ALTER >= 16 THEN
+  DISPLAY "Du darfst ein Bier bestellen."
+END-IF
+----
+Da sich *COBOL* als Ziel gesetzt hat, möglichst in flüssigem
+Englisch programmieren zu können, ist auch sowas erlaubt:
+[source,cobol]
+----
+IF PREMIUM AND
+   B-ALTER GREATER THAN OR EQUAL TO 16
+THEN
+  DISPLAY "Du darfst ein Bier bestellen."
+END-IF
+----
+
+===== Tests auf Datentypen
+
+Wenn wir z.Bsp. das Alter eines ```BENUTZER``` von der Kommandozeile einlesen wollen,
+sollten wir auch überprüfen, ob tatsächlich ein gültiger Wert eingegeben wurde.
+
+Um zu prüfen, ob in einer Variable ein **numerischer Wert** steht, können wir
+den __Klassentest__ ```NUMERIC``` benutzen:
+[source,cobol]
+----
+IF TEMP-FELD IS NUMERIC THEN
+   DISPLAY "Das Feld enthält nur Ziffern."
+END-IF
+----
+Ebenso können wir prüfen, ob der ```Name``` eines ```BENUTZER``` nur Buchstaben besteht:
+[source,cobol]
+----
+IF VORNAME IS ALPHABETIC THEN
+    DISPLAY "Das Feld enthält nur Buchstaben."
+END-IF
+----
+
+[NOTE]
+====
+Der ```GnuCOBOL```-Compiler unterstützt folgende __Klassentests__:
+
+* ```NUMERIC```
+* ```ALPHABETIC```
+* ```ALPHABETIC-LOWER```
+* ```ALPHABETIC-UPPER```
+====
+
+===== EVALUATE
+
+Nehmen wir an, wir wollen je nach ```Status``` des ```BENUTZER``` eine bestimmte Aktion
+ausführen. Dann _könnte_ man das mittels ```IF```-Abfragen so lösen:
+[source,cobol]
+----
+IF PREMIUM THEN
+  DISPLAY "Nutzer ist Premium-Kunde."
+ELSE
+  IF GESPERRT THEN
+    DISPLAY "Nutzer ist gesperrt."
+  ELSE
+    IF NORMAL THEN
+      DISPLAY "Nutzer ist normal."
+    ELSE
+      DISPLAY "Ungültiger Status."
+    END-IF
+  END-IF
+END-IF
+----
+Dieser Code ist sowohl unverständlich, als auch schlecht erweiterbar, falls es eine
+neue ```Status``` - Ausprägung gibt.
+
+Wesentlich schöner geht es mit dem ```EVALUATE```-Befehl:
+[source,cobol]
+----
+EVALUATE TRUE
+WHEN NORMAL
+  DISPLAY "User ist normal."
+WHEN PREMIUM
+  DISPLAY "Nutzer ist Premium-Kunde."
+WHEN GESPERRT
+  DISPLAY "Nutzer ist gesperrt."
+WHEN OTHER                            // <1>
+  DISPLAY "Status ist ungültig."
+END-EVALUATE
+----
+<1> Der ```WHEN OTHER```-Fall wird immer dann durchlaufen, wenn kein vorheriges Kriterium
+zutraf.
+
+Noch nützlicher wird das ```EVALUATE```-Statement, wenn man es für
+den Vergleich mit mehreren Variablen benutzt.
+
+Wir wollen herausfinden, ob ein ```BENUTZER``` ein Bier bestellen darf.
+Das soll er genau dann dürfen, wenn er
+
+* Den Status ```PREMIUM``` hat und mindestens ```16``` Jahre alt ist.
+* Den Status ```NORMAL``` hat und mindestens ```18``` Jahre alt ist.
+
+Das modellieren wir mit ```EVALUATE``` z.Bsp. so:
+[source,cobol]
+----
+EVALUATE TRUE ALSO B-ALTER                       // <1>
+WHEN PREMIUM ALSO GREATER THAN OR EQUAL TO 16    // <2>
+WHEN NORMAL  ALSO GREATER THAN OR EQUAL TO 18
+  DISPLAY "Du darfst ein Bier bestellen."
+WHEN OTHER
+  DISPLAY "Du darfst leider kein Bier bestellen."
+END-EVALUATE
+----
+<1> Jeder ```WHEN```-Zweig muss nun zwei Bedingungen prüfen, welche mit ```ALSO```
+getrennt werden.
+<2> Die erste Bedingung, die zu ```TRUE``` evaluieren muss, ist die Condition ```PREMIUM```.
+Die zweite, dass das ```B-ALTER``` größer oder gleich ```16``` ist.
+
+Es ist Geschmackssache, ob man folgende Variante für lesbarer hält:
+[source,cobol]
+----
+EVALUATE TRUE ALSO TRUE            // <1>
+WHEN PREMIUM ALSO B-ALTER >= 16
+WHEN NORMAL  ALSO B-ALTER >= 18
+  DISPLAY "Du darfst ein Bier bestellen."
+WHEN OTHER
+  DISPLAY "Du darfst leider kein Bier bestellen."
+END-EVALUATE
+----
+<1> Die zweite Bedingung ist nun nicht auf einen Vergleich von ```B-ALTER``` festgelegt,
+sondern ist beliebig.
+
+Semantisch äquivalent wäre auch noch diese Variante:
+[source,cobol]
+----
+EVALUATE TRUE ALSO B-ALTER
+WHEN PREMIUM ALSO >= 16
+WHEN NORMAL  ALSO >= 18
+  DISPLAY "Du darfst ein Bier bestellen."
+WHEN OTHER
+  DISPLAY "Du darfst leider kein Bier bestellen."
+END-EVALUATE
+----
+Welche Variante man bevorzugt, kann jeder selber entscheiden.

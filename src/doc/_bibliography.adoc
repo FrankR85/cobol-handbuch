@@ -1,0 +1,7 @@
+[bibliography]
+
+== References
+
+- [[[mf]]] https://www.microfocus.com/de-de/about/press-room/article/2013/academia-needs-more-support-to-tackle-the-it-skills-gap/
+- [[[ed]]] https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf
+- [[[dp]]] David Parnas, irgendwann 1970. Mündlich überliefert.

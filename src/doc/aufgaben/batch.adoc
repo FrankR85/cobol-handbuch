@@ -1,0 +1,136 @@
+:source-highlighter: highlightjs
+:highlightjsdir: highlight
+
+== Batch-Verarbeitung
+*COBOL* hat, so sagt man, seine Stärke in der Batch-Verarbeitung großer
+Datenmengen.
+
+Wir wollen daher beispielhaft ein kleines Batch-Programm schreiben,
+welches eine Datei mit Umsätzen einliest und eine Ausgabedatei erzeugt.
+
+=== Die Eingabe
+Als Eingabe soll eine Datei ```input.txt``` dienen, die mehrere Eingabesätze
+mit diesem Aufbau enthält:
+
+.Aufbau eines Eingabesatzes
+|===
+|Zeichen von |Zeichen bis |Bezeichnung | Erklärung
+
+|1|5|BankID|Jede Bank hat eine eindeutige, 5-stellige ID.
+|6|16|Kontonummer|Jedes Konto hat eine - innerhalb der Bank - eindeutige 10-stellige ID.
+|17|27|Betrag|Der Betrag, der dem Konto gutgeschrieben wird. 8 Vorkommastellen, 2 Nachkommastellen, nur positive Werte.
+|28|80|Verwendungszweck|Der Verwendungszweck der Gutschrift kann einen beliebigen Text enthalten.
+|===
+
+Eine beispielhafte Eingabedatei sähe z.Bsp. so aus:
+----
+4711112345678900005000000Testüberweisung
+4711100000051040002000000Testüberweisung
+4711100000051040003000000Testüberweisung
+4711100000051040004000000Testüberweisung
+4711212345678900005000000Testüberweisung1
+4711200000051040002000000Testüberweisung1
+4711200000051040003000000Testüberweisung1
+4711200000051040004000000Testüberweisung1
+----
+=== Die Ausgabe
+Als Ausgabe wird eine Datei erwartet, wo zu jedem Konto der kumulierte Saldo aller zugehöriger Überweisungen
+ausgegeben wird.
+
+Zusätzlich soll für jede Bank die Summe ausgegeben werden, die insgesamt auf ihre Konten gebucht wird.
+
+Die Ausgabedatei könnte also z.Bsp. so aussehen:
+
+----
+Account 1234567890:      50000.00
+=================================
+Total EUR for 47111:     50000.00
+
+Account 0000005104:     180000.00
+Account 1234567890:      50000.00
+=================================
+Total EUR for 47112:    320000.00
+----
+
+=== Das Programm
+
+Schauen wir uns zunächst an, wie man mit *COBOL* eine Datei einlesen kann:
+
+==== Einlesen einer Datei
+
+Dazu machen wir dem Programm in der ```ENVIRONMENT DIVISION``` die Datei bekannt:
+
+[source,cobol]
+----
+ENVIRONMENT DIVISION.
+INPUT-OUTPUT SECTION.
+FILE-CONTROL.
+   SELECT TRANSACTIONS ASSIGN TO 'input.txt'
+       ORGANIZATION IS LINE SEQUENTIAL.
+----
+
+Die Datei ```TRANSACTIONS``` muss jetzt noch in der ```DATA DIVISION```
+eine ```File Description``` bekommen:
+
+[source,cobol]
+----
+DATA DIVISION.
+    FILE SECTION.
+    FD TRANSACTIONS.
+    01 TRANSACTION-RECORD PIC X(80).
+----
+
+Jetzt können wir die Datei einlesen und durch die Sätze iterieren:
+
+[source,cobol]
+----
+OPEN INPUT TRANSACTIONS <1>
+   PERFORM UNTIL EOF = 'Y'
+     READ TRANSACTIONS INTO TEMP-RECORD <2>
+        AT END MOVE 'Y' TO EOF
+        NOT AT END PERFORM HANDLE-RECORD
+     END-READ
+   END-PERFORM
+CLOSE TRANSACTIONS
+----
+<1> Die Datei ```TRANSACTIONS``` wird zum Lesen geöffnet.
+<2> Es wird ein Satz aus ```TRANSACTIONS``` in das Feld ```TEMP-RECORD``` überführt.
+<3> Nach Ende des letzten Satzes wird die Datei geschlossen.
+
+==== Ausgeben einer Datei
+Die Ausgabe einer Datei funktioniert nun ähnlich. Es wird die Datei jetzt nicht für ```INPUT```
+geöffnet, sondern - Überraschung - für ```OUTPUT```:
+
+[source,cobol]
+----
+OPEN OUTPUT BANKOUT <1>
+----
+<1> Die Datei ```BANKOUT``` muss vorher in der ```ENVIRONMENT DIVISION``` definiert sein.
+
+Ein Satz kann dann mittels
+[source,cobol]
+----
+WRITE BANKOUT-RECORD FROM BANK-RECORD
+----
+in die Datei geschrieben werden.
+
+[NOTE]
+====
+Einen Betrag von ```50.000€``` möchte man nicht unbedingt als ```0005000000``` in der Ausgabedatei stehen haben.
+Man kann die Darstellung des Betrags durch eine geschickte ```PICTURE```-Anweisung beeinflussen.
+So steht ein ```Z``` für eine führende Null, die nicht angedruckt werden soll.
+
+Das Komma kann man - als Punkt - an geeigneter Stelle einfach hinschreiben, so dass sich für den Betrag eine ```PICTURE```-Anweisung wie diese eignen würde:
+
+[source,cobol]
+----
+05 AMOUNT PIC Z(08)9.99.
+----
+
+====
+
+==== Sortierung
+[WARNING]
+====
+Was passiert mit dem Programm, wenn die Sätze in der Eingabedatei in beliebiger Reihenfolge stehen?
+====

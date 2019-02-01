@@ -1,0 +1,34 @@
+=== Iteration 2
+Die hart-kodierte Antwort nimmt dem Spiel etwas die Spannung.
+Wir wollen die Antwort nun also *zufällig* machen.
+
+Eine Quelle für *zufällige* Zahlen könnten z.Bsp. die Sekunden der aktuellen Systemzeit
+sein.
+Die können wir in *COBOL* so ermitteln:
+[source,cobol]
+----
+MOVE FUNCTION CURRENT-DATE TO CURRENT-DATE-AND-TIME
+----
+Hierbei ist das Feld ```CURRENT-DATE-AND-TIME``` in der ```WORKING-STORAGE SECTION```
+so definiert:
+[source,cobol]
+----
+01 CURRENT-DATE-AND-TIME.
+     05 CDT-Year PIC 9(4).
+     05 CDT-Month PIC 9(2). *> 01-12
+     05 CDT-Day PIC 9(2). *> 01-31
+     05 CDT-Hour PIC 9(2). *> 00-23
+     05 CDT-Minutes PIC 9(2). *> 00-59
+     05 CDT-Seconds PIC 9(2). *> 00-59
+     05 CDT-Hundredths-Of-Secs PIC 9(2). *> 00-99
+     05 CDT-GMT-Diff-Hours PIC S9(2) SIGN LEADING SEPARATE.
+     05 CDT-GMT-Diff-Minutes PIC 9(2). *> 00 or 30
+----
+
+[TIP]
+====
+Das Feld ```CDT-Hundredths-Of-Secs``` sollte einen für unsere Zwecke ausreichend
+zufälligen Wert enthalten.
+====
+
+image::dilbert_random.gif[]

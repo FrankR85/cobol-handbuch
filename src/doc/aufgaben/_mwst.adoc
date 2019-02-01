@@ -1,0 +1,333 @@
+== Der Mehrwertsteuer-Rechner [[mwstaufgabe]]
+Wir wollen ein Programm schreiben, welches zu einem Betrag den Nettobetrag ermittelt, also den Betrag zuzüglich der aktuell in
+Deutschland geltenden Mehrwersteuer von ```19%```.
+
+[NOTE]
+====
+Ziel dieser Übung ist es, den Aufbau eines COBOL-Programms <<handbuch.adoc#programmaufbau,Programmaufbau>> kennenzulernen und
+erste Erfahrungen mit dem Testframework zu machen.
+====
+Gehen wir Schritt-für-Schritt vor:
+
+Zunächst stellen wir sicher, dass wir in unserem Ausgangsverzeichnis sind:
+
+ $ pwd
+ > /vagrant/cobol
+
+Nun wechseln wir ins Verzeichnis ```mehrwertsteuer```:
+
+ $ cd mehrwertsteuer
+
+In diesem Verzeichnis finden wir diverse Artefakte:
+
+[source,bash]
+----
+.
+├── run-ut.sh             // <1>
+├── src
+│   └── MWST.cbl          // <2>
+└── test
+    ├── MWSTT.CBL         // <3>
+    ├── resources
+    │   └── MWSTC
+----
+<1> Mit diesem Skript können wir unsere Testfälle ausführen.
+<2> Im ```src```-Ordner befindet sich der Programmrumpf ```MWST.cbl```, der später die Programmlogik enthalten wird.
+<3> Im Verzeichnis ```test``` liegen unsere Testfälle für das Programm ```MWST.cbl```.
+
+Öffnen wir nun die Datei ```test/MWSTT.cbl``` mit einem beliebigen Text-Editor.
+Diese Datei enthält alle unsere Testfälle und wir nennen sie unsere _Testsuite_.
+Entsprechend beginnen wir die Datei mit folgender Zeile:
+[source,cobol]
+----
+           TESTSUITE 'Testfälle für den Mehrwertsteuer-Rechner'
+----
+[TIP]
+====
+Die Testsuite enthält COBOL-Code, das Schlüsselwort ```TESTSUITE``` beginnt also auf Spalte 12.
+Wer sich bisher noch nicht über das <<handbuch.adoc#fixedformat,Format>>
+einer COBOL-Datei informiert hat, sollte das nachholen.
+====
+Schreiben wir dazu zunächst einen Testfall.
+Wie sähe der einfachste Testfall für den Mehrwertsteuer-Rechner aus? Nun, der einfachste Fall ist:
+[source]
+----
+Nettobetrag(0€) = 0€
+----
+Mit Hilfe von https://github.com/neopragma/cobol-unit-test[cobol-unit-test] können wir das in COBOL so formulieren:
+[source,cobol]
+----
+           TESTSUITE 'Testfälle für den Mehrwertsteuer-Rechner'
+
+           TESTCASE '0EUR zzgl. 19% MWST sind 0EUR' // <1>
+           MOVE 0 TO NETTO-BETRAG                   // <2>
+           PERFORM CALCULATE-MWST                   // <3>
+           EXPECT BRUTTO-BETRAG TO BE NUMERIC ZERO  // <4>
+----
+<1> Wir geben unserem aktuellen Testfall eine passende Beschreibung
+<2> Die Eingabedaten für unseren Testfall werden gesetzt
+<3> Aufruf der Mehrwersteuer-Berechnung
+<4> Überprüfung des Ergebnis
+
+Gut, nun haben wir schon einen ersten Testfall. Schauen wir uns jetzt den vorbereiteten
+Programmrumpf ```MWST.cbl``` im ```src```-Verzeichnis an:
+[source,cobol]
+----
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. MWST.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+
+       WORKING-STORAGE SECTION.
+        01  NETTO-BETRAG           PIC 999V99.
+        01  BRUTTO-BETRAG          PIC 999.99.
+        01  MWST                   PIC V999 VALUE .19.
+
+       PROCEDURE DIVISION.
+        GOBACK
+           .
+
+       END PROGRAM MWST.
+----
+Nun führen wir einmal den Testfall aus und gucken was passiert. Es _könnte_ ja sein, dass das Programm tatsächlich
+schon genug macht, um unseren Testfall zu bestehen:
+
+ $ . run-ut.sh
+ > ==================================================
+ Running: /vagrant/cobol-unit-test/run-ut MWSTC MWST MWSTT
+ /vagrant/cobol/mehrwertsteuer/test/TESTPRG.cbl:25: error: 'CALCULATE-MWST' is not defined
+ Compile nicht erfolgreich!
+ /vagrant/cobol-unit-test/run-ut: line 53: /vagrant/cobol/mehrwertsteuer/target/TESTPRG: No such file or directory
+
+Ok, schade, das reicht scheinbar noch nicht. Aber es ist ja logisch, denn im Testfall
+rufen wir ja die *SECTION* ```CALCULATE-MWST``` auf:
+[source,cobol]
+----
+           TESTSUITE 'Testfälle für den Mehrwertsteuer-Rechner'
+
+           TESTCASE '0EUR zzgl. 19% MwSt sind 0EUR'
+           MOVE 0 TO NETTO-BETRAG
+           PERFORM CALCULATE-MWST // <1>
+           EXPECT BRUTTO-BETRAG TO BE NUMERIC ZERO
+----
+<1> Hier wird die *SECTION* ```CALCULATE-MWST``` aufgerufen - welche es noch gar nicht gibt.
+
+Implementieren wir nun die fehlende *SECTION* und rufen sie auf:
+[[mwst-rumpf]]
+[source,cobol]
+----
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. MWST.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+
+       WORKING-STORAGE SECTION.
+        01  NETTO-BETRAG           PIC 999V99.
+        01  BRUTTO-BETRAG          PIC 999.99.
+        01  MWST                   PIC V999 VALUE .19.
+
+       PROCEDURE DIVISION.
+        PERFORM CALCULATE-MWST // <1>
+        GOBACK
+           .
+       CALCULATE-MWST SECTION. // <2>
+      *    Noch nicht implementiert  // <3>
+           .
+       1000Z.
+           EXIT.
+
+       END PROGRAM MWST.
+----
+<1> Hier wird die *SECTION* ```CALCULATE-MWST``` aufgerufen
+<2> An dieser Stelle beginnt die *SECTION* ```CALCULATE-MWST```
+<3> Hier käme nun die Implementierung.
+
+
+Reicht das vielleicht schon, um den ersten Testfall zu bestehen? Probieren wir es aus:
+
+ $ . run-ut.sh
+[source,bash]
+----
+Running: /vagrant/cobol-unit-test/run-ut MWSTC MWST MWSTT
+
+TEST SUITE:
+UNIT TESTS MWST.CBL
+
+     PASS:   1. 0EUR zzgl 19% MwSt sind 0EUR
+
+  1 TEST CASES WERE EXECUTED
+  1 PASSED
+  0 FAILED
+----
+Gut, wir haben noch keine spezielle Logik für die Mehrwertsteuerberechnung geschrieben, aber der erste Testfall ist bereits in Ordnung.
+Schreiben wir also den nächsten: ```100€``` zzgl. ```19% MwSt``` sollen ```119€``` sein:
+[source,cobol]
+----
+           TESTSUITE 'Testfälle für den Mehrwertsteuer-Rechner'
+
+           TESTCASE '0EUR zzgl. 19% MwSt sind 0EUR' // <1>
+           MOVE 0 TO NETTO-BETRAG
+           PERFORM CALCULATE-MwSt
+           EXPECT BRUTTO-BETRAG TO BE NUMERIC ZERO
+
+           TESTCASE '100EUR zzgl 19% MwSt sind 119EUR' // <2>
+           MOVE 100 TO NETTO-BETRAG
+           PERFORM CALCULATE-MwSt
+           EXPECT BRUTTO-BETRAG TO BE NUMERIC 119
+----
+<1> Den alten Testfall lassen wir stehen, damit wir sicher sein können, dass er auch weiterhin funktioniert,
+wenn wir Änderungen am Programm vornehmen.
+<2> Unser neuer Testfall für ```100€```.
+
+Führen wir die Testfälle jetzt aus, bekommen wir folgendes Ergebnis:
+
+ $ . run-ut.sh
+
+[source,bash]
+----
+Running: /vagrant/cobol-unit-test/run-ut MWSTC MWST MWSTT
+
+TEST SUITE:
+Testfälle für den Mehrwertsteuer-Rechner
+
+     PASS:   1. 0EUR zzgl 19% MwSt sind 0EUR
+**** FAIL:   2. 100EUR zzgl 19% MwSt sind 119EUR
+    EXPECTED 0000011900+, WAS 0000000000+
+
+  2 TEST CASES WERE EXECUTED
+  1 PASSED
+  1 FAILED
+----
+Klar. Jetzt kommen wir nicht mehr drum herum und müssen uns mit der Mehrwertsteuer-Logik auseinander setzen.
+Wir wollen also die Formel ```Bruttobetrag = Nettobetrag * (1 + MwSt) ``` anwenden.
+Mit dem ```COMPUTE```-Befehl geht das in COBOL wunderbar einfach:
+[source,cobol]
+----
+COMPUTE BRUTTO-BETRAG = NETTO-BETRAG * (1 + MWST)
+----
+Das Programm sieht dann aktuell so aus:
+[source,cobol]
+----
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. MWST.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+
+       WORKING-STORAGE SECTION.
+        01  NETTO-BETRAG           PIC 999V99.
+        01  BRUTTO-BETRAG          PIC 999.99.
+        01  MWST                   PIC V999 VALUE .19.
+
+       PROCEDURE DIVISION.
+           PERFORM CALCULATE-MWST
+           GOBACK
+           .
+       CALCULATE-MWST SECTION.
+           COMPUTE BRUTTO-BETRAG
+                 = NETTO-BETRAG * (1 + MWST)
+           .
+           EXIT.
+
+       END PROGRAM MWST.
+----
+Überprüfen wir unsere Implementierung nun, indem wir die Testfälle ausführen:
+
+ $ . run-ut.sh
+
+[source,bash]
+----
+Running: /vagrant/cobol-unit-test/run-ut MWSTC MWST MWSTT
+
+TEST SUITE:
+Testfälle für den Mehrwertsteuer-Rechner
+
+     PASS:   1. 0EUR zzgl 19% MwSt sind 0EUR
+     PASS:   2. 100EUR zzgl 19% MwSt sind 119EUR
+
+  2 TEST CASES WERE EXECUTED
+  2 PASSED
+  0 FAILED
+----
+Scheint funktioniert zu haben. Sind wir jetzt fertig? Schauen wir uns mal an, was der
+Bruttobetrag von ```1,99€``` wäre. Laut unser Formel wäre ```1,99€ * (1 + 0,19)= 2,3681€```.
+Kaufmännisch gerundet ergibt das ```2,37€```. Schreiben wir einen Testfall dafür:
+[source,cobol]
+----
+      *    Die anderen Testfälle werden aus Platzgründen hier ausgelassen
+           TESTCASE '1,99EUR zzgl 19% MwSt sind 2,37EUR'
+           MOVE 1.99 TO NETTO-BETRAG
+           PERFORM CALCULATE-MWST
+           EXPECT BRUTTO-BETRAG TO BE NUMERIC 2.37
+----
+Lassen wir unsere Testsuite nun laufen, erhalten wir:
+
+ $ . run-ut.sh
+
+[source,bash]
+----
+Running: /vagrant/cobol-unit-test/run-ut MWSTC MWST MWSTT
+
+TEST SUITE:
+Testfälle für den Mehrwertsteuer-Rechner
+
+     PASS:   1. 0EUR zzgl 19% MwSt sind 0EUR
+     PASS:   2. 100EUR zzgl 19% MwSt sind 119EUR
+**** FAIL:   3. 1,99EUR zzgl 19% MwSt sind 2,37EUR
+    EXPECTED 0000000237+, WAS 0000000236+ // <1>
+
+  3 TEST CASES WERE EXECUTED
+  2 PASSED
+  1 FAILED
+----
+<1> Erwartetes Ergebnis und tatsächliches Ergebnis unterscheiden sich um ```1 Cent```.
+
+Wir müssen dem Compiler also noch sagen, dass er das berechnete Ergebnis kaufmännisch runden soll:
+[source,cobol]
+----
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. MWST.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+
+       WORKING-STORAGE SECTION.
+        01  NETTO-BETRAG           PIC 999V99.
+        01  BRUTTO-BETRAG          PIC 999.99.
+        01  MWST                   PIC V999 VALUE .19.
+
+       PROCEDURE DIVISION.
+           PERFORM CALCULATE-MWST
+           GOBACK
+           .
+       CALCULATE-MWST SECTION.
+           COMPUTE BRUTTO-BETRAG ROUNDED // <1>
+                 = NETTO-BETRAG * (1 + MWST)
+           .
+           EXIT.
+
+       END PROGRAM MWST.
+----
+<1> Der *COMPUTE*-Befehl erlaubt es bei allen Zielfeldern den Rundungsmodus anzugeben.
+
+Mit dieser kleinen Änderung können wir unsere Testsuite nochmals ausführen:
+
+ $ . run-ut.sh
+
+[source,bash]
+----
+Running: /vagrant/cobol-unit-test/run-ut MWSTC MWST MWSTT
+
+TEST SUITE:
+Testfälle für den Mehrwertsteuer-Rechner
+
+     PASS:   1. 0EUR zzgl 19% MwSt sind 0EUR
+     PASS:   2. 100EUR zzgl 19% MwSt sind 119EUR
+     PASS:   3. 1,99EUR zzgl 19% MwSt sind 2,37EUR
+
+  3 TEST CASES WERE EXECUTED
+  3 PASSED
+  0 FAILED
+----
+
+Damit ist unser kleines Beispielprogramm nun vollständig implementiert.
+
+Interessant ist nun <<handbuch.adoc#klarheitdersprachejava,ein Vergleich der COBOL-Implementierung mit einer Java-Lösung>>.

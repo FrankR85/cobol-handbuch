@@ -1,0 +1,15 @@
+:toc!:
+:sss: Schnick-Schnack-Schnuck
+== {sss}
+Wir wollen zunächst ein ganz rudimentäres Kommandozeilen-Programm schreiben,
+mit dem man gegen den Computer *{sss}* spielen kann.
+
+=== Iteration 1
+Wir wollen ein minimal nützliches Programm erstellen.
+Das könnte z.Bsp. folgende Funktionen haben:
+
+* Der Benutzer gibt ```Stein```, ```Schere``` oder ```Papier```
+in der Kommandozeile ein
+* Der Computer wählt eine hart-kodierte Antwort aus, z.Bsp. wählt er
+stets ```Schere```.
+* Das Programm gibt den Sieger der Runde auf dem Bildschirm aus.

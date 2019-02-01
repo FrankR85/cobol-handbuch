@@ -1,0 +1,259 @@
+==== Datenmanipulationen
+
+Angenommen, wir haben eine Variable ```TEMP-NAME``` die folgendermaßen definiert ist:
+
+[source,cobol]
+----
+01 TEMP-NAME            PIC X(30).
+----
+Wie können wir dieser Variable einen Wert zuweisen?
+Dafür gibt es den ```MOVE```-Befehl:
+
+===== Elementarer MOVE
+
+[[movebefehl]]
+[source,cobol]
+----
+MOVE "Bob"
+  TO TEMP-NAME
+----
+
+Für strukturierte Felder funktioniert das ebenso. Nehmen wir das Beispiel aus
+<<gruppenstrukturen, dem Abschnitt über strukturierte Daten>>:
+
+[source,cobol]
+----
+01 BENUTZER.
+  05 VORNAME        PIC X(30).
+  05 NACHNAME       PIC X(30).
+  05 B-ALTER        PIC 999.
+01 ADMIN.
+  05 VORNAME        PIC X(30).
+  05 NACHNAME       PIC X(30).
+  05 A-ALTER        PIC 999.
+----
+
+Wenn wir jetzt einen ```BENUTZER``` mit den Werten ```Thomas|Müller|29``` haben und möchten
+ihn zum ```ADMIN``` machen, können wir das mit einem einzigen ```MOVE``` erreichen:
+
+[source,cobol]
+----
+MOVE BENUTZER
+  TO ADMIN
+----
+
+emoji:warning[1x] Dieser _Gruppen-Move_ funktioniert nur, wenn ```BENUTZER``` und ```ADMIN``` auch
+tatsächlich die gleichen Felder mit der gleichen Länge enthalten.
+
+Wären bei ```ADMIN``` z.Bsp. zwei Felder vertauscht:
+[source,cobol]
+----
+01 ADMIN.
+  05 VORNAME        PIC X(30).
+  05 A-ALTER        PIC 999.    //<1>
+  05 NACHNAME       PIC X(30).
+----
+<1> Das Alter kommt jetzt vor dem Nachnamen
+
+Dann kommt nicht das gewünschte Ergebnis raus. Der Compiler berechnet die Länge, die ```BENUTZER```
+im Speicher belegt, nimmt den gesamten Inhalt und schiebt ihn in die Gruppe ```ADMIN```.
+Insbesondere interessieren ihn die Feldnamen überhaupt nicht!
+
+Möchte man einen Gruppenmove, wo nur Felder mit dem gleichen Namen aufeinander abgebildet werden,
+kann man den Befehl ```MOVE CORRESPONDING``` verwenden.
+
+[WARNING]
+====
+Der Befehl ```MOVE CORRESPONDING``` ruft bei etlichen Entwicklern eine
+bestimmte Reaktion hervor: emoji:rage[2x]
+
+Was könnte der Grund dafür sein?
+====
+
+Schauen wir uns im Detail an, wie der ```MOVE``` Befehl funktioniert.
+
+===== MOVE unter der Lupe
+
+Angenommen, wir haben ein numerisches Feld:
+[source,cobol]
+----
+01 TEMP-FELD        PIC 9.
+----
+
+und wir versuchen, diesem Feld einen Buchstaben zuzuweisen:
+[source,cobol]
+----
+MOVE "A"
+  TO TEMP-FELD
+----
+Was passiert? Der ```GnuCOBOL```-Compiler beanstandet das nicht, aber was passiert
+zur Laufzeit?
+Probieren wir es aus:
+[source,cobol]
+----
+IDENTIFICATION DIVISION.
+PROGRAM-ID. DATADEFS.
+ENVIRONMENT DIVISION.
+DATA DIVISION.
+
+WORKING-STORAGE SECTION.
+01 TEMP-FELD PIC 9.
+
+PROCEDURE DIVISION.
+    MOVE "A"
+      TO TEMP-FELD
+
+    DISPLAY TEMP-FELD
+
+    GOBACK
+   .
+END PROGRAM DATADEFS.
+----
+
+Wandeln wir das Programm nun um und führen es aus:
+
+ $ cobc -x DATADEFS.cbl
+ $ ./DATADEFS
+ > A
+
+Wir sehen also: nichts passiert! Am Ende steht in ```TEMP-FELD``` ein ungültiger Wert.
+
+Das ist ungünstig, aber ```GnuCOBOL``` bietet eine Compiler-Option, die einen auf solche
+fragwürdigen ```MOVE```-Befehle hinweist:
+
+ $ cobc -x --Wall DATADEFS.cbl
+ > DATADEFS.cbl:11: warning: numeric value is expected
+ DATADEFS.cbl:7: warning: 'TEMP-FELD' defined here as PIC 9
+
+
+[TIP]
+====
+Es empfiehlt sich generell mit der Compiler-Option ```--Wall``` zu arbeiten.
+Diese Option aktiviert alle in ```GnuCOBOL``` verfügbaren Warnungen.
+
+Alles, was der Compiler für uns sicherstellt, müssen wir nicht mehr
+testen! emoji:muscle[2x]
+====
+
+Auch an Stellen, wo der Compiler uns nicht weiterhelfen kann, z.Bsp. bei externen Datenquellen,
+sind wir nicht auf verlorenem Posten. Wir können mit ```IS NUMERIC``` überprüfen,
+ob in ```TEMP-FELD``` tatsächlich ein gültiger numerischer Wert steht:
+
+[source,cobol]
+----
+IDENTIFICATION DIVISION.
+PROGRAM-ID. DATADEFS.
+ENVIRONMENT DIVISION.
+DATA DIVISION.
+
+WORKING-STORAGE SECTION.
+01 TEMP-FELD PIC 9.
+
+PROCEDURE DIVISION.
+    MOVE "A"
+      TO TEMP-FELD
+
+    IF TEMP-FELD IS NUMERIC THEN
+       DISPLAY "Numerisch"
+    ELSE
+       DISPLAY "Nicht numerisch"
+    END-IF
+
+    GOBACK
+   .
+END PROGRAM DATADEFS.
+----
+
+Und dieses Programm liefert - wenig überraschend - die Ausgabe
+
+ > Nicht numerisch
+
+Schauen wir uns noch 2 weitere Möglichkeiten an, Variablen Werte zuzuweisen:
+
+===== INITIALIZE
+
+Mit dem ```INITIALIZE```-Befehl können Variablen *zurückgesetzt* werden,
+d.h. im Wesentlichen im werden numerischen Felder der Wert ```ZERO``` zugewiesen,
+und alphanumerischen Felder der Wert ```SPACE```.
+
+Das ist insbesondere für Gruppenstrukturen nützlich. Möchte man einen neuen ```BENUTZER``` anlegen,
+so sollte man alle Felder der Struktur zurücksetzen, damit keine Daten des alten ```BENUTZER``` noch
+irgendwo stehen bleiben.
+
+Eine Möglichkeit wäre:
+[source, cobol]
+----
+MOVE SPACES
+  TO VORNAME IN BENUTZER
+     NACHNAME IN BENUTZER
+
+MOVE ZERO
+  TO B-ALTER IN BENUTZER
+----
+Da das insbesondere für größere Strukturen sehr umständlich wäre, kann man das kürzer
+schreiben:
+
+[source,cobol]
+----
+INITIALIZE BENUTZER
+----
+[NOTE]
+====
+Variablen in der ```WORKING-STORAGE SECTION``` können mit einem Wert *vorbelegt* werden:
+
+[source,cobol]
+----
+01 PLZ-MUENSTER-X4TEL          PIC X(5) VALUE "48147".
+----
+Das Feld ```PLZ-MUENSTER-X4TEL``` ist nun mit dem Wert ```48147``` vorbelegt.
+====
+emoji:grey_question[2x] Welchen Inhalt hat ```PLZ-MUENSTER-X4TEL```
+nach ```INITIALIZE PLZ-MUENSTER-X4TEL``` emoji:grey_question[2x]
+
+===== SET
+
+Es gibt eine weitere Möglichkeit um Variablen Werte zuzuweisen, welche insbesondere im Abschnitt über
+<<bedingungen, Bedingungen>> nützlich ist.
+
+Nehmen wir an, wir möchten zu einem ```BENUTZER``` auch noch den ```STATUS``` speichern.
+Der ```STATUS``` kann dabei die Werte
+
+* ```NORMAL```
+* ```PREMIUM```
+* ```GESPERRT```
+
+annehmen.
+Diesen beschränkten Wertebereich können wir nun z.Bsp. so modellieren:
+[source,cobol]
+----
+01 BENUTZER.
+    ...
+    05 BSTATUS        PIC X VALUE SPACE. // <1>
+      88 NORMAL             VALUE SPACE. // <2>
+      88 PREMIUM            VALUE 'P'.
+      88 GESPERRT           VALUE 'G'.
+----
+<1> Da ```STATUS``` ein reserviertes Wort ist, nennen wir die Gruppe ```BSTATUS```.
+<2> Der Wert ```SPACE``` für ```NORMAL``` entspricht der Standardbelegung von ```BSTATUS```. ```NORMAL```
+ist also der Standardwert, welcher bei einer *frischen* ```BENUTZER```-Gruppe aktiviert ist.
+
+Um nun einem ```BENUTZER``` den Status ```PREMIUM``` zu vergeben, können wir sowohl
+[source,cobol]
+----
+MOVE 'P'
+  TO BSTATUS
+----
+als auch
+[source,cobol]
+----
+SET PREMIUM
+ TO TRUE
+----
+schreiben. Dabei ist die letztere Variante natürlich deutlich lesbarer, denn nicht
+jeder Leser des Codes weiß sofort, dass ```P``` für ```PREMIUM``` steht.
+
+[TIP]
+====
+Die ```88-iger``` Stufen sind zusammen mit dem ```SET```-Befehl ein gutes Mittel gegen
+_magische Zahlen_ footnote:[Siehe https://de.wikipedia.org/wiki/Magische_Zahl_(Informatik)#Magische_Zahlen_in_Code].
+====

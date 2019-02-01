@@ -1,0 +1,155 @@
+==== Schleifen
+
+Bei fast jeder Programmieraufgabe gibt es Dinge, die immer wieder
+getan werden müssen. Auch in *COBOL* gibt es für solche Fälle die bekannten
+_Schleifen_.
+
+===== PERFORM n TIMES
+
+Die einfachste Schleife mit fest definierter Durchlaufanzahl
+ist ```PERFORM n TIMES```:
+[source,cobol]
+----
+PERFORM 3 TIMES
+  DISPLAY "Hallo"
+END-PERFORM
+----
+Die Ausgabe dieses Programms ist wenig überraschend:
+
+ $ ./NTIMES
+ > Hallo
+ Hallo
+ Hallo
+
+Die Anzahl der Schleifendurchläufe muss nicht hart codiert sein,
+sondern kann durchaus variabel sein:
+[source,cobol]
+----
+MOVE 4 TO TEMP-ZAEHLER
+PERFORM TEMP-ZAEHLER TIMES
+  DISPLAY "Hallo"
+END-PERFORM
+----
+
+[QUESTION]
+====
+
+**Wie oft wird diese Schleife durchlaufen?**
+[source,cobol]
+----
+MOVE 5 TO TEMP-ZAEHLER
+PERFORM TEMP-ZAEHLER TIMES
+  ADD 1 TO TEMP-ZAEHLER
+END-PERFORM
+----
+**Antwort:**
+
+* [ ] Genau ```5``` mal.
+* [ ] Unendlich oft.
+* [ ] Es gibt einen Compilefehler.
+
+====
+
+===== PERFORM UNTIL
+
+In den meisten Fällen will man einen bestimmten ```Code-Block``` nicht nur ```n``` mal durchlaufen,
+sondern man möchte auch wissen, das wievielte Mal die Schleife schon durchlaufen wurde und mit diesem ```Index```
+dann etwas machen, z.Bsp. auf eine Tabelle zugreifen oder für die Ausgabe benutzen.
+
+Dafür gibt es in *COBOL* das ```PERFORM VARYING ... FROM ... BY ... UNTIL ... ```-Konstrukt.
+
+.PERFORM UNTIL
+[[performuntilexample1]]
+====
+[source,cobol]
+----
+IDENTIFICATION DIVISION.
+PROGRAM-ID. DATADEFS.
+ENVIRONMENT DIVISION.
+DATA DIVISION.
+
+WORKING-STORAGE SECTION.
+01 TEMP-ZAEHLER PIC 99. <1>
+
+PROCEDURE DIVISION.
+   PERFORM VARYING TEMP-ZAEHLER FROM 1 BY 1 <2>
+    UNTIL TEMP-ZAEHLER > 10       <3>
+
+     DISPLAY TEMP-ZAEHLER
+   END-PERFORM
+
+   GOBACK
+   .
+END PROGRAM DATADEFS.
+----
+<1> Hier wird der Schleifenindex definiert.
+<2> Setzen des Startwerts von ```TEMP-ZAEHLER``` und Definition der
+Schrittweite.
+<3> Die Abbruchbedingung.
+
+Dieses Programm gibt die Zahlen von 1 bis 10 auf der Konsole aus.
+====
+
+[QUESTION]
+====
+Was passiert, wenn man den Index im <<performuntilexample1>> so definiert:
+[source,cobol]
+----
+01 TEMP-ZAEHLER PIC 9.
+----
+*Antwort*
+
+* [ ] Eine Endlosschleife.
+* [ ] Das Programm macht nichts.
+* [ ] Ein Compilefehler.
+
+====
+* Die Schrittweise ist standardmäßig schon ```1```, es ist also nicht nötig
+jedes Mal ```BY 1``` explizit hinzuschreiben.
+* Mit ```EXIT PERFORM CYCLE``` kann man vorzeitig aus einer Schleife ausbrechen.
+
+
+Auch die ```VARYING```-Anweisung ist optional, man kann den Schleifenindex auch selber verwalten:
+[source,cobol]
+----
+MOVE 1 TO TEMP-ZAEHLER <1>
+PERFORM UNTIL TEMP-ZAEHLER > 10
+  DISPLAY TEMP-ZAEHLER
+
+  ADD 1 TO TEMP-ZAEHLER <2>
+END-PERFORM
+----
+<1> Der Startwert wird gesetzt.
+<2> Der Zähler muss manuell hochgezählt werden.
+
+====== WITH TEST AFTER
+Wann wird die Abbruchbedingung der Schleife geprüft? Passiert das _vor_ dem Durchlauf,
+oder _danach_?
+Probieren wir es aus:
+[source,cobol]
+----
+MOVE 10 TO TEMP-ZAEHLER
+PERFORM UNTIL TEMP-ZAEHLER = 10
+  DISPLAY TEMP-ZAEHLER
+END-PERFORM
+----
+Wenn die Abbruchbedingung *vor* dem Durchlauf geprüft würde, würden wir keine Ausgabe erwarten:
+
+ $ ./DATADEFS
+ >
+
+Und so ist es auch. Wir können den Compiler aber auch dazu bringen, die Abbruchbedingung erst
+am Ende zu prüfen, durch Zusatz von ```WITH TEST AFTER```:
+[source,cobol]
+----
+MOVE 10 TO TEMP-ZAEHLER
+PERFORM WITH TEST AFTER UNTIL TEMP-ZAEHLER = 10
+  DISPLAY TEMP-ZAEHLER
+END-PERFORM
+----
+Nun bekommen wir:
+
+ $ ./DATADEFS
+ > 10
+
+Diese Unterscheidung wird beim Lesen von Dateien später noch wichtig werden.

@@ -1,0 +1,10 @@
+= Praktische Softwareentwicklung mit COBOL
+include::_header.adoc[]
+
+include::{handbuchdir}/_willkommen.adoc[]
+
+include::{handbuchdir}/_fixedformat.adoc[]
+
+include::{handbuchdir}/_klarheitdersprache.adoc[]
+
+include::{handbuchdir}/_programmaufbau.adoc[]

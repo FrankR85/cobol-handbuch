@@ -1,0 +1,267 @@
+== Aufbau eines COBOL-Programms [[programmaufbau]]
+Nachdem wir jetzt ein einfaches COBOL-Programm gesehen haben, wollen
+wir uns mal die Details genauer anschauen.
+Nehmen wir den Programmrumpf aus der <<aufgaben.adoc#mwst-rumpf, Mehrwertsteuer-Übung>>:
+[source,cobol]
+----
+       IDENTIFICATION DIVISION. // <1>
+       PROGRAM-ID. MWST.
+       ENVIRONMENT DIVISION. // <1>
+       DATA DIVISION.  // <1>
+
+       WORKING-STORAGE SECTION.
+        01  NETTO-BETRAG           PIC 999V99.
+        01  BRUTTO-BETRAG          PIC 999.99.
+        01  MWST                   PIC V999 VALUE .19.
+
+       PROCEDURE DIVISION.  // <1>
+        PERFORM CALCULATE-MWST
+        GOBACK
+           .
+       CALCULATE-MWST SECTION.
+      *    Noch nicht implementiert
+           .
+           EXIT.
+
+       END PROGRAM MWST.
+----
+<1> Ein COBOL-Programm besteht aus genau 4 ```DIVISIONs```.footnote:[Ja, mit gewissen Compiler-Optionen akzeptiert GnuCOBOL auch weniger ```DIVISIONs```, aber das ignorieren wir.]
+
+Schauen wir uns nun jede ```DIVISION``` mal im Schnelldurchlauf an.
+
+=== IDENTIFICATION DIVISION
+Die ```IDENTIFICATION DIVISION``` enthält nützliche Informationen _über_ das Programm, z.Bsp.
+für den Compiler oder für die Entwickler.
+
+Verpflichtend ist der Eintrag ```PROGRAMM-ID. program-name.```.
+
+IMPORTANT: Für ein Programm wie unseren
+Mehrwertsteuer-Rechner ist der Programm-Name unwichtig, aber für *Unterprogramme*
+gibt der Programm-Name an, wie dieses Programm per ```CALL```-Befehl aufrufbar ist.
+
+Weitere Attribute in der ```IDENTIFICATION DIVISION``` sind der Author-Name und das Datum, zu
+dem das Programm geschrieben wurde.
+
+[source,cobol]
+----
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. meinErstesProgramm.
+       AUTHOR. Bob der Dinosaurier.
+       DATE-WRITTEN. 20th June 2018.
+----
+
+=== ENVIRONMENT DIVISION
+Die Idee der ```ENVIRONMENT DIVISION``` ist, dass es genau eine Stelle im Programm gibt,
+an der die Konfiguration an die Laufzeit-Umgebung geschieht.
+
+Teil der Laufzeit-Umgebung sind z.Bsp. die *Pfade von Dateien*, die das Programm einlesen oder ausgeben soll.
+Das kann man dann in der ```INPUT-OUTPUT SECTION``` angeben:
+[source,cobol]
+----
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+          SELECT Students ASSIGN TO "C:\Daten\Students.txt"
+            ORGANIZATION IS SEQUENTIAL.
+----
+
+=== DATA DIVISION
+In der ```DATA DIVISION``` werden alle Datenfelderfootnote:[In anderen Programmiersprachen würde man das wohl ```Variable``` nennen.] definiert.
+
+==== Definition von Variablen
+Schauen wir uns einige Beispiele an. Soll das Programm den Namen des Benutzers einlesen, braucht man ein Datenfeld um den Namen zu speichern.
+In COBOL gibt es keinen Datentyp ```String``` für beliebig lange Zeichenketten, sondern man muss die Länge vorher fest definieren:
+[source,cobol]
+----
+       01 BENUTZER-NAME      PIC A(30) VALUE SPACES.
+----
+In diesem Beispiel ist das Datenfeld ```BENUTZER-NAME``` 30 Zeichen lang und darf nur Buchstaben enthalten, da das ```A``` für _Alphabet_ steht.
+
+Würden wir im ```BENUTZER-NAMEN``` auch Zahlen erlauben wollen, müssten wir die Datenfelddefinition minimal anpassen:
+Wir ersetzen das ```A``` durch ein ```X```, welches für _alphanumerischen_ Inhalt steht:
+[source,cobol]
+----
+       01 BENUTZER-NAME      PIC X(30) VALUE SPACES.
+----
+
+Würde man das ```Alter``` des Benutzers einlesen wollen, bräuchte man ein Datenfeld, in dem nur Zahlen erlaubt sind.
+Das könnte man so erreichen:
+[source,cobol]
+----
+       01 BENUTZER-ALTER      PIC 9(02) VALUE SPACES.
+----
+Hier wäre das Datenfeld für das ```BENUTZER-ALTER``` nun 2-stellig numerisch.
+
+[TIP]
+====
+Folgende ```PICTURE```-Bedingungen sind äquivalent:
+
+* ```PIC 99```
+* ```PIC 9(2)```
+* ```PIC 9(02)```
+====
+
+Diese Datendefinition für ```BENUTZER-ALTER``` wäre äußerst ungünstig. Würde ein 100-jähriger unsere Software benutzen, hätten wir ein Problem.
+
+Was wäre die Ausgabe dieses Programms?
+
+[source,cobol]
+----
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. COMMAND.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  BENUTZER-ALTER           PIC 99.
+       PROCEDURE DIVISION.
+          DISPLAY "Hallo. Bitte Alter eingeben:"
+          ACCEPT BENUTZER-ALTER
+          DISPLAY "Sie sind " BENUTZER-ALTER
+          GOBACK
+          .
+       END PROGRAM COMMAND.
+----
+Gibt ein Benutzer hier ```100``` ein, so würde das Programm antworten:
+[source]
+----
+Sie sind 10.
+----
+
+[WARNING]
+====
+Nicht so gut. Wir werden aber später noch Möglichkeiten kennenlernen, auf
+diese Situationen angemessen zu reagieren.
+====
+COBOL bietet eine ganze Reihe Möglichkeiten, seine Datenfelder möglichst genau zu spezifizieren.
+Im ersten Schritt ist es aber ausreichend, wenn wir uns die eben genannten Beispiele merken und noch ein
+bißchen Verständnis der ```WORKING-STORAGE SECTION``` haben.
+
+==== Gruppenstrukturen [[gruppenstrukturen]]
+Eine weitere wichtige Möglichkeit, Variablen in COBOL zu definieren, sind _Gruppenstrukturen_.
+Wenn wir zu einem Benutzer seinen Vornamen, Nachnamen und das Alter speichern wollen, können wir uns eine Struktur ```BENUTZER``` wie folgt anlegen:
+[source,cobol]
+----
+01 BENUTZER.                     // <1>
+  05 VORNAME        PIC X(30).
+  05 NACHNAME       PIC X(30).
+  05 B-ALTER        PIC 999.     // <2>
+----
+<1> Hier wird die Struktur definiert. Beachte, dass hier keine ```PICTURE```-Bedingung steht.
+<2> Da ```ALTER``` ein Befehl in COBOL ist, ist die Bezeichnung reserviert und wir können keine Variable ```ALTER``` nennen.
+
+Angenommen, wir haben noch einen Admin und müssen auch seinen Vornamen, Nachnamen und sein Alter merken. Wir würden uns also eine ähnliche Struktur anlegen:
+[source,cobol]
+----
+01 ADMIN.
+  05 VORNAME        PIC X(30).
+  05 NACHNAME       PIC X(30).
+  05 A-ALTER        PIC 999.    // <1>
+----
+<1> Das Feld heißt nun nicht ```B-ALTER```, sondern ```A-ALTER```.
+
+Gut. Nun wollen wir dem Admin den Vornamen _BOFH_ footnote:[Siehe https://de.wikipedia.org/wiki/Bastard_Operator_From_Hell] zuweisen.
+Dazu nutzen wir den <<movebefehl, MOVE-Befehl>>:
+[source,cobol]
+----
+IDENTIFICATION DIVISION.
+PROGRAM-ID. DATADEFS.
+ENVIRONMENT DIVISION.
+DATA DIVISION.
+
+WORKING-STORAGE SECTION.
+01 BENUTZER.
+  05 VORNAME        PIC X(30).
+  05 NACHNAME       PIC X(30).
+  05 B-ALTER        PIC 999.
+01 ADMIN.
+  05 VORNAME        PIC X(30).
+  05 NACHNAME       PIC X(30).
+  05 A-ALTER        PIC 999.
+
+PROCEDURE DIVISION.
+    MOVE "BOFH"      // <1>
+      TO VORNAME
+
+    DISPLAY VORNAME
+    GOBACK
+   .
+END PROGRAM DATADEFS.
+----
+<1> Der Variable ```VORNAME``` wird der Wert ```BOFH``` zugewiesen.
+
+Funktioniert das so?
+
+ $ cobc -x DATADEFS.cbl
+ > DATADEFS.cbl:18: error: 'VORNAME' is ambiguous; needs qualification
+ DATADEFS.cbl:8: error: 'VORNAME IN BENUTZER' defined here
+ DATADEFS.cbl:12: error: 'VORNAME IN ADMIN' defined here
+
+Der Compiler beschwert sich: er weiß nicht, welcher ```VORNAME``` gemeint ist:
+Der ```VORNAME``` in der Struktur ```BENUTZER``` oder in der Struktur ```ADMIN```?
+
+Wir müssen ihm auf die Sprünge helfen und unsere Variable *qualifizieren*:
+[source,cobol]
+----
+MOVE "BOFH"
+  TO VORNAME IN ADMIN // <1>
+----
+<1> Das ```IN ADMIN``` sagt dem Compiler *eindeutig*, welcher ```VORNAME``` gemeint ist.
+
+Mit Hilfe dieser abgestuften Definitionen lassen sich strukturierte Daten in COBOL wunderbar abbilden.
+Dafür werden wir in den späteren Kapiteln noch diverse Beispiele sehen.
+
+==== WORKING-STORAGE SECTION
+Die WORKING-STORAGE SECTION ist ein *zusammenhängender Speicherbereich*, in dem alle Variablen des
+Programms gespeichert werden.
+Die Datenfeld-Definitionen haben keinen Einfluss auf den tatsächlichen Aufbau
+des reservierten Speicherbereichs.
+
+[NOTE]
+====
+Die Datenfelddefinitionen in der ```WORKING-STORAGE SECTION``` dienen als *Schablone*, die das
+Programm auf den Speicherbereich legt, um einfacher damit arbeiten zu können.
+====
+Schauen wir uns ein kurzes Beispiel an, um das Schablonen-Prinzip zu verdeutlichen. Angenommen, wir haben ein Programm mit folgender ```WORKING-STORAGE SECTION```:
+[source,cobol]
+----
+WORKING-STORAGE SECTION.
+01  BENUTZER-ALTER           PIC 99.
+01  BENUTZER-NAME            PIC X(30).
+----
+Der *Compiler* berechnet nun das ```OFFSET``` aller Datenfelder, also den _relativen_ Startpunkt des Datenfeldes im Speicher:
+[source]
+----
+BENUTZER-ALTER: +0  // <1>
+BENUTZER-NAME:  +2  // <2>
+----
+<1> Das Feld ```BENUTZER-ALTER``` beginnt direkt am Anfang des Speicherbereichs.
+<2> Der Compiler berechnet die Länge aller vorher definierten Felder und kennt somit den Startpunkt von ```BENUTZER-NAME```. Die
+Länge von ```BENUTZER-ALTER``` ist 2, also belegt ```BENUTZER-ALTER``` die ersten beiden Bytes und ```BENUTZER-NAME``` beginnt direkt im Anschluss bei Byte 3.
+
+Insgesamt wäre die ```WORKING-STORAGE SECTION``` dieses Programms 32 Bytes groß.
+
+Das soll an dieser Stelle für einen groben Überblick reichen. Wir werden später ausführlich die Datendefinitionen besprechen.
+
+image::manager_summary.gif[]
+
+=== PROCEDURE DIVISION
+
+Die ```PROCEDURE DIVISION``` enthält die Anweisungen, um die in der ```DATA DIVISION``` definierten Daten zu manipulieren.
+
+Sie ist hierarchisch aufgebaut und besteht aus *Paragraphen*, *Sections* und *Statements*. Paragraphen und Sections dienen zur
+Strukturierung des Programms und können mit ```PERFORM``` oder `GO TO` aufgerufen werden.
+
+Da das Zitieren von Fachartikeln aus den 1970iger Jahren einen Text seriös wirken lässtfootnote:[David Parnas, irgendwann 1970, mündlich überliefert], soll hier
+angemerkt werden, dass Sprungbefehle wie ```GO TO``` spätestens seit Edgar Dijkstra's Artikel _Go To Statement Considered Harmful_ verpöhnt sind.
+Sie führen zu undurchschaubarem Spaghetti-Code und sind somit nicht mehr verständlich und fehleranfällig.  <<ed>>
+
+In der ```PROCEDURE DIVISION``` codiert man die Logik des Programms. Schauen wir uns nun der Reihe nach die Bausteine an, die wir brauchen, um unsere Geschäftslogik zu implementieren.
+
+include::procedure/_datenmanipulation.adoc[]
+
+include::procedure/_bedingungen.adoc[]
+
+include::procedure/_schleifen.adoc[]
+
+include::procedure/_struktur.adoc[]

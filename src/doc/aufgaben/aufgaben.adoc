@@ -1,0 +1,8 @@
+= Praktische Softwareentwicklung mit COBOL
+include::_header.adoc[]
+
+include::aufgaben/_setup.adoc[]
+
+include::aufgaben/schnickschnackschnuck.adoc[]
+
+include::aufgaben/_mwst.adoc[]

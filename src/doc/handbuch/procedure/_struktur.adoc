@@ -1,0 +1,266 @@
+==== Strukturierung
+
+Um die Programmlogik strukturisieren und modularisieren zu können, gibt es in
+*COBOL* mehrere Möglichkeiten. Wir werden uns auf zwei Alternativen beschränken,
+die aber für die allermeisten Fälle genau passend sind.
+
+===== SECTIONs
+
+Programmlogik innerhalb der ```PROCEDURE DIVISION``` kann mittels ```SECTIONs```
+strukturiert werden.
+
+Schauen wir uns das <<handbuch.adoc#performuntilexample1, Beispiel>> aus dem Kapitel über Schleifen nochmal an.
+
+Wir könnten die Schleife in eine eigene ```SECTION``` auslagern:
+
+[source,cobol]
+----
+       AUSGABE-ZAHLEN-1-BIS-10 SECTION. <1>
+       PERFORM WITH TEST AFTER VARYING TEMP-ZAEHLER FROM 1 BY 1
+        UNTIL TEMP-ZAEHLER = 10
+          DISPLAY TEMP-ZAEHLER
+       END-PERFORM
+           EXIT. <2>
+----
+<1> Wir definieren eine ```SECTION``` mit dem Namen ```AUSGABE-ZAHLEN-1-BIS-10```
+<2> Am Ende einer ```SECTION``` sollte ein ```EXIT```-Befehl stehen, damit der Programmfluss
+an die Stelle zurückkehrt, wo die ```SECTION``` aufgerufen wurde.
+
+Und diese dann in der ```PROCEDURE DIVISION``` aufrufen:
+
+[source,cobol]
+----
+PROCEDURE DIVISION.
+   PERFORM AUSGABE-ZAHLEN-1-BIS-10
+
+   GOBACK
+   .
+----
+
+[TIP]
+====
+Indem man Logik in eine eigene ```SECTION``` auslagert, kann man der Logik
+einen aussagekräftigen Namen geben und somit seinen Nachfolgern einen großen Gefallen tun.
+====
+
+Das hat den großen Vorteil, dass jemand direkt beim Blick in die ```PROCEDURE DIVISION``` erkennen kann,
+was das Programm macht. Es ist nicht nötig, erst Sinn und Zweck der Schleife zu entschlüsseln.
+
+
+[WARNING]
+====
+Man könnte ja auch Kommentare verwenden, um die Logik zu beschreiben, z.Bsp.:
+
+[source,cobol]
+----
+       PROCEDURE DIVISION.
+      *Ausgabe der Zahlen von 1 bis 10
+       PERFORM WITH TEST AFTER VARYING TEMP-ZAEHLER FROM 1 BY 1
+        UNTIL TEMP-ZAEHLER = 10
+          DISPLAY TEMP-ZAEHLER
+       END-PERFORM
+
+       GOBACK
+       .
+----
+Was ist der Nachteil an Kommentaren im Code?
+====
+
+===== Paragraphen
+Eine weitere Möglichkeit, *COBOL*-Code zu strukturieren, sind ```Paragraphen```.
+Diese verhalten sich so ähnlich wie eine ```SECTION```, werden aber ohne ein bestimmtes
+Schlüsselwort definiert:
+[source,cobol]
+----
+       DAS-IST-EIN-PARAGRAPH.       <1>
+           DISPLAY "Herzlich Willkommen."
+           .                        <2>
+----
+<1> Die Definition eines ```Paragraphen``` besteht nur aus seinem Namen und einem Punkt.
+<2> Ein Paragraph endet immer beim nächsten Punkt.
+
+Dieser Paragraph kann jetzt auch mittels ```PERFORM``` aufgerufen werden:
+[source,cobol]
+----
+PERFORM DAS-IST-EIN-PARAGRAPH
+----
+[NOTE]
+====
+Der Unterschied zwischen ```Paragraphen``` und ```SECTIONs``` ist, dass eine ```SECTION```
+mehrere ```Paragraphen``` enthalten kann. Beim ```PERFORM``` einer ```SECTION``` werden dann
+alle enthaltenen Paragraphen durchlaufen.
+====
+Schauen wir uns einige Beispiele an.
+
+Nehmen wir ein kleines Programm und strukturieren es mittels ```Paragraphen```:
+[source,cobol]
+----
+IDENTIFICATION DIVISION.
+PROGRAM-ID. DATADEFS.
+ENVIRONMENT DIVISION.
+DATA DIVISION.
+PROCEDURE DIVISION.
+   PERFORM ICH-BIN-EIN-PARAGRAPH
+   PERFORM ICH-BIN-AUCH-EIN-PARAGRAPH
+   GOBACK
+   .
+ICH-BIN-EIN-PARAGRAPH.
+   DISPLAY "Hallo,"
+   .
+ICH-BIN-AUCH-EIN-PARAGRAPH.
+   DISPLAY "Welt!"
+   .
+END PROGRAM DATADEFS.
+----
+
+Führen wir dieses Programm aus, erhalten wir:
+
+ $ ./DATADEFS
+ > Hallo,
+ > Welt!
+
+Genau das Gleiche gilt, wenn wir aus den ```Paragraphen``` jeweils
+eine ```SECTION``` machen:
+[source,cobol]
+----
+IDENTIFICATION DIVISION.
+PROGRAM-ID. DATADEFS.
+ENVIRONMENT DIVISION.
+DATA DIVISION.
+PROCEDURE DIVISION.
+   PERFORM ICH-BIN-EINE-SECTION
+   PERFORM ICH-BIN-AUCH-EINE-SECTION
+   GOBACK
+   .
+ICH-BIN-EINE-SECTION SECTION. <1>
+   DISPLAY "Hallo,"
+   .
+ICH-BIN-AUCH-EINE-SECTION SECTION. <1>
+   DISPLAY "Welt!"
+   .
+END PROGRAM DATADEFS.
+----
+<1> Die ```Paragraphen``` wurden nun ```SECTIONs```.
+
+An der Ausgabe des Programms hat sich nichts geändert, das können wir leicht nachprüfen.
+
+===== Bitte nicht mischen!
+
+[WARNING]
+====
+Es ist keine gute Idee, sein Programm mit einer Mischung aus ```Paragraphen``` und ```SECTIONs```
+zu strukturieren.
+====
+Warum ist das so? Schauen wir uns folgendes Beispiel an:
+[source,cobol]
+----
+IDENTIFICATION DIVISION.
+PROGRAM-ID. DATADEFS.
+ENVIRONMENT DIVISION.
+DATA DIVISION.
+PROCEDURE DIVISION.
+   PERFORM ICH-BIN-EINE-SECTION  <1>
+   PERFORM ICH-BIN-EIN-PARAGRAPH
+   PERFORM ICH-BIN-AUCH-EIN-PARAGRAPH
+   GOBACK
+   .
+ICH-BIN-EINE-SECTION SECTION.
+   DISPLAY "Herzlich Willkommen!"
+   .
+
+ICH-BIN-EIN-PARAGRAPH.
+   DISPLAY "Hallo,"
+   .
+ICH-BIN-AUCH-EIN-PARAGRAPH.
+   DISPLAY "Welt!"
+   .
+END PROGRAM DATADEFS.
+----
+<1> Wir haben jetzt eine ```SECTION``` und zwei ```Paragraphen```
+
+[QUESTION]
+====
+Welche Ausgabe erwarten wir bei dem obigen Programm?
+====
+
+Probieren wir auch dieses Programm einmal aus:
+
+ $ ./DATADEFS
+ > Herzlich Willkommen!
+ Hallo,
+ Welt!
+ Hallo,
+ Welt!
+
+Überrascht? Warum ist das so? Warum haben wir zweimal als Ausgabe?
+
+----
+Hallo,
+Welt!
+Hallo,
+Welt!
+----
+
+Schauen wir uns die ```SECTION``` ```ICH-BIN-EINE-SECTION``` mal genauer an:
+
+[source,cobol]
+----
+ICH-BIN-EINE-SECTION SECTION.
+   DISPLAY "Herzlich Willkommen!"
+   .
+----
+
+Wo ist diese ```SECTION``` zu Ende? Beim ersten Punkt? *Nein*, eben gerade *nicht*!
+Ein Punkt beendet einen ```PARAGRAPH```, aber eine ```SECTION``` kann
+mehrere ```Paragraphen``` enthalten und bei einem ```PERFORM``` auf die ```SECTION```
+werden dann alle ```Paragraphen``` aufgerufen.
+
+Gut, also haben wir schonmal verstanden, *warum* die Ausgabe so ist, wie sie ist.
+Aber können wir die Mischung aus ```Paragraphen``` und ```SECTIONs``` irgendwie heilen?
+
+In vielen Legacy-*COBOL*-Anwendungen findet man am Ende jeder ```SECTION```
+einen ```EXIT```-Befehl, also z.Bsp:
+
+[source,cobol]
+----
+ICH-BIN-EINE-SECTION SECTION.
+   DISPLAY "Herzlich Willkommen!"
+   EXIT. <1>
+----
+<1> Hat das ```EXIT```-Keyword den gewünschten Effekt?
+
+Wir können es ausprobieren... aber, um die Enttäuschung vorweg zu nehmen...
+Nein, das ```EXIT``` hilft nicht weiter.
+
+[TIP]
+====
+Ein Blick in die Dokumentation erklärt auch, warum ```EXIT``` hier nicht hilft.
+Einfach aus dem Grund, dass ```EXIT``` nicht als ```SECTION```-Ende spezifiert ist!
+====
+
+Wie können wir denn dann unsere ```SECTION``` ```ICH-BIN-EINE-SECTION```
+beenden?
+
+[NOTE]
+====
+Die Dokumentation ist eindeutig. Eine ```SECTION``` endet dort, wo eine neue ```SECTION```
+anfängt.
+====
+Daraus folgt direkt, dass eine Mischung aus ```Paragraphen``` und ```SECTIONs```
+nur unnötige Probleme macht. Man sollte sich für eine Strukturierung entscheiden!
+
+[TIP]
+====
+Wir werden unsere Beispiele mittels ```SECTIONs``` strukturieren.
+====
+
+Mit *COBOL 2002* gäbe es aber tatsächlich doch eine Möglichkeit, eine ```SECTION```
+mit einem Keyword zu beenden: durch das neue ```EXIT SECTION```-Konstrukt, welches eigentlich
+dazu gedacht ist, eine ```SECTION``` vorzeitig zu verlassen. Dieses Keyword ist auch bei IBM-Compilern ab
+Version `5.2` verfügbar.
+
+[QUESTION]
+====
+Ist der Einsatz von ```EXIT SECTION``` der Verständlichkeit eines Programms eher
+förderlich oder abträglich?
+====
