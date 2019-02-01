@@ -5,6 +5,6 @@ after_success:
   - mv handbuch.html index.html ;
   - git init
   - git config user.name "${GH_USER_NAME}"
-  - git config user.email "{GH_USER_EMAIL}"
+  - git config user.email "${GH_USER_EMAIL}"
   - git add . ; git commit -m "Deploy to GitHub Pages"
   - git push --force "https://${GHTOKEN}@${GH_REF}" master:gh-pages
