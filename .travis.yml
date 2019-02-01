@@ -1,8 +1,7 @@
 language: java
 
 after_success:
-  - ls -l;
-  - cd target ;
+  - cd target/generated-docs ;
   - ls -l;
   - git init
   - git config user.name "${GH_USER_NAME}"
