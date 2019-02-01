@@ -1,7 +1,9 @@
 language: java
 
 after_success:
-  - cd output ;
+  - ls -l;
+  - cd target ;
+  - ls -l;
   - git init
   - git config user.name "${GH_USER_NAME}"
   - git config user.email "{GH_USER_EMAIL}"
