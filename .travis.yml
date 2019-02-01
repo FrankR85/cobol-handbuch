@@ -3,7 +3,6 @@ language: java
 after_success:
   - cd target/generated-docs ;
   - mv handbuch.html index.html ;
-  - ls -l;
   - git init
   - git config user.name "${GH_USER_NAME}"
   - git config user.email "{GH_USER_EMAIL}"
