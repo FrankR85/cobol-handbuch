@@ -9,7 +9,7 @@ Nehmen wir unseren ```BENUTZER``` aus dem vorherigen Kapitel:
 ----
 01 BENUTZER.
  05 VORNAME        PIC X(30).
- 05 B-ALTER         PIC 999.
+ 05 B-ALTER        PIC 999.
  05 BSTATUS        PIC X VALUE SPACE.
    88 NORMAL             VALUE SPACE.
    88 PREMIUM            VALUE 'P'.

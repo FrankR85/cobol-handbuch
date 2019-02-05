@@ -21,20 +21,23 @@ Hierbei ist zu beachten, dass die meisten Legacy-COBOL Anwendungen im *fixed for
 
 === Ein Format sie zu knechten [[fixedformat]]
 
+Eine Zeile klassisches Cobol ist 80 Zeichen lang, denn so viele Zeichen passen auf eine normale Lochkarte:
+
 [source,cobol]
 ----
-                                                                       //<1>
+                                                                        //<1>
 ------*A---B---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+-------
       * Eine Kommentarzeile // <2>
        IDENTIFICATION DIVISION. // <3>
        PROGRAM-ID. halloWelt.                                           DOKU
        PROCEDURE DIVISION.
-        DISPLAY "Hallo Welt!".
+           DISPLAY "Hallo Welt!". // <4>
        STOP RUN.
 ----
-<1> Die Spalten 73 bis 80 werden vom Compiler ignoriert und können zu Dokumentationszwecken genutzt werden.
+<1> Die Spalten 1 bis 6 sowie 73 bis 80 werden vom Compiler ignoriert und können zu Dokumentationszwecken genutzt werden.footnote:[Traditionell wird einer dieser beiden Bereiche für Zeilennummern verwendet, damit man seinen Lochkartenstapel wieder sortieren (lassen) kann, wenn er mal runterfällt.]
 <2> Eine Kommentarzeile wird durch einen `*` in Spalte 7, der _Indikatorspalte_, erkannt.
 <3> Eine *DIVISION* beginnt in _Area A_, dem Bereich von Spalte 8 bis Spalte 11. Ebenso *SECTION Namen* und *PARAGRAPH Namen*.
+<4> Normale Befehle stehen in _Area B_ von Spalte 12 bis 71.
 
 Der GnuCOBOL-Compiler unterstützt zusätzlich noch so einen _modernen_ Modus, den *Free-Format Mode*.
 Dabei sind die Einrückungen dann egal und man kann *Hallo Welt!* noch prägnanter schreiben:
