@@ -8,7 +8,7 @@ image::twitter_mutter_cobol.jpg[]
 === Einige Fakten
 
 * COBOL läuft bei 90% der Fortune 500 Firmen im täglichen Einsatz
-* 70% der kritischen Geschäftslogik dieser Firmen ist in COBOL
+* 71% der kritischen Geschäftslogik dieser Firmen ist in COBOL
 * COBOL läuft bei 80% aller Point-of-sale Transaktionen
 
 Quelle: <<mf>>
