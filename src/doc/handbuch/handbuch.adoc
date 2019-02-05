@@ -8,3 +8,5 @@ include::{handbuchdir}/_fixedformat.adoc[]
 include::{handbuchdir}/_klarheitdersprache.adoc[]
 
 include::{handbuchdir}/_programmaufbau.adoc[]
+
+include::_bibliography.adoc[]
