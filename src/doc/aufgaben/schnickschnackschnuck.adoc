@@ -1,6 +1,7 @@
 :toc!:
 :sss: Schnick-Schnack-Schnuck
 == {sss}
+Entfällt demnächst
 Wir wollen zunächst ein ganz rudimentäres Kommandozeilen-Programm schreiben,
 mit dem man gegen den Computer *{sss}* spielen kann.
 
