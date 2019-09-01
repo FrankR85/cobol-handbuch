@@ -1,0 +1,43 @@
+== KATAs zum Lernen
+
+.Übersicht aller Katas
+|===
+^|Name der Kata ^|Schwierigkeit ^| Bedingungen ^| Schleifen ^| Arrays ^|Eingabe | Functions | Rechnen
+
+|http://kata-log.rocks/fizz-buzz-kata[FizzBuzz]
+^|+
+^|X
+|
+|
+|
+|
+^| X
+
+|http://codingdojo.org/kata/Diamond[Draw a Diamond]
+^| + + + + +
+^|
+^|X 
+^|
+|
+|
+|
+
+|http://kata-log.rocks/tic-tac-toe-kata[Tic Tac Toe]
+^| + + + + +
+^|X
+^|X
+^|X
+|
+|
+|
+
+|http://kata-log.rocks/ohce-kata[ohce]
+^| + + +
+^|
+^|
+^|
+^|
+^|
+^|
+
+|===
