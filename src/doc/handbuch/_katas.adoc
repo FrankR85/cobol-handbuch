@@ -10,13 +10,13 @@
 |
 |
 |
-|
+^| (X)
 ^| X
 
 |http://codingdojo.org/kata/Diamond[Draw a Diamond]
 ^| + + + + +
 ^|
-^|X 
+^|X
 ^|
 |
 |
@@ -33,11 +33,29 @@
 
 |http://kata-log.rocks/ohce-kata[ohce]
 ^| + + +
+^| X
+^| X
+^|
+^| X
+^| (X)
+^|
+
+|http://kata-log.rocks/roman-numerals-kata[Römische Zahlen]
+^| + + + +
+^| emoji:heavy_check_mark[1x]
+^| emoji:heavy_check_mark[1x]
+^|
+^| emoji:heavy_check_mark[1x]
+^|
+^|
+
+|http://kata-log.rocks/string-calculator-kata[Taschenrechner]
+^| + + + +
 ^|
 ^|
 ^|
-^|
-^|
-^|
+^| X
+^| X
+^| X
 
 |===
