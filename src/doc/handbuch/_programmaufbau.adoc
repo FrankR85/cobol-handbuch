@@ -211,6 +211,51 @@ MOVE "BOFH"
 Mit Hilfe dieser abgestuften Definitionen lassen sich strukturierte Daten in COBOL wunderbar abbilden.
 Dafür werden wir in den späteren Kapiteln noch diverse Beispiele sehen.
 
+==== Arrays [[arrays]]
+Um mehrdimensionale Strukturen abbilden zu können, also beispielsweise Spielfelder oder - ganz allgemein - Matrizen,
+gibt es *Arrays*.
+
+Wollen wir ein ```3x3``` Spielfeld für _TicTacToe_ modellieren, können wir Folgendes schreiben:
+[source,cobol]
+----
+01 SPIELFELD.
+05 Y-ACHSE OCCURS 3.
+   07 ZELLE PIC X OCCURS 3.
+----
+
+Auf die Zellen des Spielfelds können wir jetzt zugreifen:
+
+[source,cobol]
+----
+MOVE "X"
+  TO ZELLE(2,1)
+----
+
+Dieser Befehl setzt ein ```X``` in die erste Spalte der zweiten Zeile.
+
+Interessant wird es, wenn wir das ganze Spielfeld auf einmal mit Werten befüllen wollen.
+Falls wir die Zellen des Spielfelds der Reihe nach durchnummerieren wollen, reicht dafür dieser Befehl:
+
+[source,cobol]
+----
+MOVE "123456789"
+  TO SPIELFELD
+----
+
+Warum funktioniert das? Wie im Abschnitt über _Gruppenstrukturen_ ist die Erklärung der Compiler:
+Für den Compiler ist das Feld ```Spielfeld``` ein ganz normales Datenfeld, das zwar nochmals in einzelne Zellen
+unterteilt ist, aber trotzdem wie ein zusammenhängender Speicherbereich behandelt werden kann.
+Der Wert ```123456789``` wird also in den Speicher geschrieben und erst beim Zugriff auf dieses Feld über die
+_Schablonen_ ```Y-ACHSE``` oder ```ZELLE``` interpretiert.
+
+Mit diesem Wissen können wir das Spielfeld auch sehr leicht auf einen komplett leeren Zustand zurücksetzen:
+
+[source,cobol]
+----
+MOVE SPACES
+  TO SPIELFELD
+----
+
 ==== WORKING-STORAGE SECTION
 Die WORKING-STORAGE SECTION ist ein *zusammenhängender Speicherbereich*, in dem alle Variablen des
 Programms gespeichert werden.

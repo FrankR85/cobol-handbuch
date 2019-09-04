@@ -17,8 +17,8 @@ mit diesem Aufbau enthält:
 |Zeichen von |Zeichen bis |Bezeichnung | Erklärung
 
 |1|5|BankID|Jede Bank hat eine eindeutige, 5-stellige ID.
-|6|16|Kontonummer|Jedes Konto hat eine - innerhalb der Bank - eindeutige 10-stellige ID.
-|17|27|Betrag|Der Betrag, der dem Konto gutgeschrieben wird. 8 Vorkommastellen, 2 Nachkommastellen, nur positive Werte.
+|6|15|Kontonummer|Jedes Konto hat eine - innerhalb der Bank - eindeutige 10-stellige ID.
+|16|25|Betrag|Der Betrag, der dem Konto gutgeschrieben wird. 8 Vorkommastellen, 2 Nachkommastellen, nur positive Werte.
 |28|80|Verwendungszweck|Der Verwendungszweck der Gutschrift kann einen beliebigen Text enthalten.
 |===
 
@@ -43,76 +43,17 @@ Die Ausgabedatei könnte also z.Bsp. so aussehen:
 
 ----
 Account 1234567890:      50000.00
+Account 0000005104:      90000.00
 =================================
-Total EUR for 47111:     50000.00
+Total EUR for 47111:    140000.00
 
-Account 0000005104:     180000.00
+Account 0000005104:      90000.00
 Account 1234567890:      50000.00
 =================================
-Total EUR for 47112:    320000.00
+Total EUR for 47112:    140000.00
 ----
 
-=== Das Programm
 
-Schauen wir uns zunächst an, wie man mit *COBOL* eine Datei einlesen kann:
-
-==== Einlesen einer Datei
-
-Dazu machen wir dem Programm in der ```ENVIRONMENT DIVISION``` die Datei bekannt:
-
-[source,cobol]
-----
-ENVIRONMENT DIVISION.
-INPUT-OUTPUT SECTION.
-FILE-CONTROL.
-   SELECT TRANSACTIONS ASSIGN TO 'input.txt'
-       ORGANIZATION IS LINE SEQUENTIAL.
-----
-
-Die Datei ```TRANSACTIONS``` muss jetzt noch in der ```DATA DIVISION```
-eine ```File Description``` bekommen:
-
-[source,cobol]
-----
-DATA DIVISION.
-    FILE SECTION.
-    FD TRANSACTIONS.
-    01 TRANSACTION-RECORD PIC X(80).
-----
-
-Jetzt können wir die Datei einlesen und durch die Sätze iterieren:
-
-[source,cobol]
-----
-OPEN INPUT TRANSACTIONS <1>
-   PERFORM UNTIL EOF = 'Y'
-     READ TRANSACTIONS INTO TEMP-RECORD <2>
-        AT END MOVE 'Y' TO EOF
-        NOT AT END PERFORM HANDLE-RECORD
-     END-READ
-   END-PERFORM
-CLOSE TRANSACTIONS
-----
-<1> Die Datei ```TRANSACTIONS``` wird zum Lesen geöffnet.
-<2> Es wird ein Satz aus ```TRANSACTIONS``` in das Feld ```TEMP-RECORD``` überführt.
-<3> Nach Ende des letzten Satzes wird die Datei geschlossen.
-
-==== Ausgeben einer Datei
-Die Ausgabe einer Datei funktioniert nun ähnlich. Es wird die Datei jetzt nicht für ```INPUT```
-geöffnet, sondern - Überraschung - für ```OUTPUT```:
-
-[source,cobol]
-----
-OPEN OUTPUT BANKOUT <1>
-----
-<1> Die Datei ```BANKOUT``` muss vorher in der ```ENVIRONMENT DIVISION``` definiert sein.
-
-Ein Satz kann dann mittels
-[source,cobol]
-----
-WRITE BANKOUT-RECORD FROM BANK-RECORD
-----
-in die Datei geschrieben werden.
 
 [NOTE]
 ====

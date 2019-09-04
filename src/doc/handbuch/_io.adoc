@@ -1,0 +1,107 @@
+== Dateien Lesen und Schreiben
+
+Mit *COBOL* ist es sehr einfach, Dateien einzulesen und auch wieder zu schreiben.
+Tatsächlich ist das auch eines der Haupteinsatzgebiete von *COBOL*.
+
+Wir wollen uns anschauen, wie wir eine einfache Datei, in der Datensätze über Personen stehen, einlesen können.
+
+[source,cobol]
+----
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. IO.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+             SELECT STUDENT ASSIGN TO 'students.txt' <1>
+             ORGANIZATION IS LINE SEQUENTIAL.
+       DATA DIVISION.
+          FILE SECTION.
+          FD STUDENT.
+          01 STUDENT-FILE. <2>
+             05 STUDENT-ID PIC 9(5).
+             05 STUDENT-NAME PIC X(20).
+       WORKING-STORAGE SECTION.
+       01 WS-STUDENT.
+          05 WS-STUDENT-ID PIC 9(05).
+          05 WS-STUDENT-NAME PIC X(20).
+       01 WS-EOF PIC X(1).
+       PROCEDURE DIVISION.
+           OPEN INPUT STUDENT.
+              PERFORM UNTIL WS-EOF="Y" <3>
+                 READ STUDENT INTO WS-STUDENT <4>
+                   AT END MOVE "Y" TO WS-EOF <5>
+                   NOT AT END DISPLAY WS-STUDENT <6>
+                 END-READ
+              END-PERFORM
+           CLOSE STUDENT.
+           GOBACK
+          .
+       END PROGRAM IO.
+----
+<1> Hier wird der Dateiname fixiert.
+<2> Wir beschreiben den Aufbau der Datei. Die Datei muss an den ersten 5 Stellen Ziffern
+haben, die der ```ID``` einer Person entsprechen. Ab dem 6. Zeichen kommt dann in einer Länge von 20 Zeichen
+der ```Name``` des Studenten.
+<3> Es wird so lange ein neuer _Satz_, also die nächste Zeile, gelesen, bis der Schalter ```WS-EOF``` auf ```Y``` steht.
+<4> Der Inhalt der Datei wird in die ```WORKING-STORAGE SECTION``` übertragen. Ab hier können wir dann mit den gelesenen Daten arbeiten.
+<5> Wird erkannt, dass die Datei bis zum Ende gelesen wurde, wird der Schalter ```WS-EOF```auf ```Y``` gesetzt.
+<6> Der Inhalt von ```WS-STUDENT``` wird auf der Konsole ausgegeben.
+
+
+Das Programm liest die Datei ```students.txt``` ein, schreibt die Sätze in die ```WORKING-STORAGE SECTION``` und gibt
+diese anschließend auf der Konsole aus.
+
+=== Schreiben von Dateien
+Nehmen wir an, wir sollen die Datei aus dem vorherigen Beispiel einlesen und nur die Namen der Studenten ausgeben - ohne die ```ID```.
+Wir müssen nun also wie vorhin die Eingabedatei Satz für Satz einlesen und dann jeweils den Namen in eine neue Datei schreiben.
+
+[source,cobol]
+----
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. IO.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+             SELECT STUDENT-IN ASSIGN TO 'students.txt'
+             ORGANIZATION IS LINE SEQUENTIAL.
+             SELECT STUDENT-OUT ASSIGN TO 'output.txt' <1>
+             ORGANIZATION IS LINE SEQUENTIAL.
+       DATA DIVISION.
+          FILE SECTION.
+          FD STUDENT-IN.
+          01 STUDENT-IN-FILE.
+             05 STUDENT-ID PIC 9(5).
+             05 STUDENT-NAME PIC X(20).
+          FD STUDENT-OUT.
+          01 STUDENT-OUT-FILE.
+             05 STUDENT-NAME PIC X(20). <2>
+       WORKING-STORAGE SECTION.
+       01 WS-STUDENT.
+          05 WS-STUDENT-ID PIC 9(05).
+          05 WS-STUDENT-NAME PIC X(20).
+       01 WS-EOF PIC X(1).
+       PROCEDURE DIVISION.
+           OPEN OUTPUT STUDENT-OUT <3>
+           OPEN INPUT STUDENT-IN
+              PERFORM UNTIL WS-EOF="Y"
+                 READ STUDENT-IN INTO WS-STUDENT
+                   AT END MOVE "Y" TO WS-EOF
+                   NOT AT END
+                      MOVE WS-STUDENT-NAME
+                        TO STUDENT-NAME IN STUDENT-OUT-FILE <4>
+                      WRITE STUDENT-OUT-FILE FROM STUDENT-OUT-FILE <5>
+                 END-READ
+              END-PERFORM
+           CLOSE STUDENT-IN
+           CLOSE STUDENT-OUT <6>
+
+           GOBACK
+          .
+       END PROGRAM IO.
+----
+<1> Wir definieren eine weitere Datei für die Ausgabe.
+<2> Der Record für die Ausgabedatei besteht jetzt nur aus dem ```Namen``` des Studenten.
+<3> Die Ausgabedatei wird geöffnet, diesmal für ```OUTPUT```. Logisch.
+<4> Der Name wird in den Record der Ausgabedatei geschrieben ...
+<5> ... und anschließend direkt rausgeschrieben.
+<6> Zu guter Letzt wird die Datei geschlossen.
