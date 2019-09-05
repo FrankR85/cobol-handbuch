@@ -9,6 +9,8 @@ include::{handbuchdir}/_klarheitdersprache.adoc[]
 
 include::{handbuchdir}/_programmaufbau.adoc[]
 
+include::{handbuchdir}/_io.adoc[]
+
 include::{handbuchdir}/_katas.adoc[]
 
 include::_bibliography.adoc[]
