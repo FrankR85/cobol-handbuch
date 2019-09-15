@@ -1,5 +1,5 @@
 == Dateien Lesen und Schreiben
-
+[[io]]
 Mit *COBOL* ist es sehr einfach, Dateien einzulesen und auch wieder zu schreiben.
 Tatsächlich ist das auch eines der Haupteinsatzgebiete von *COBOL*.
 

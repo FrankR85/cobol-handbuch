@@ -1,4 +1,5 @@
 ==== Bedingungen
+[[bedingungen]]
 
 Natürlich gibt es auch in *COBOL* die aus anderen Sprachen bekannten
 **IF-Abfragen**.

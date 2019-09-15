@@ -1,4 +1,5 @@
 ==== Schleifen
+[[schleifen]]
 
 Bei fast jeder Programmieraufgabe gibt es Dinge, die immer wieder
 getan werden müssen. Auch in *COBOL* gibt es für solche Fälle die bekannten

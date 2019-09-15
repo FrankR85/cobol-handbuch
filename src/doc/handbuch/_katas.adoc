@@ -2,46 +2,46 @@
 
 .Übersicht aller Katas
 |===
-^|Name der Kata ^|Schwierigkeit ^| Bedingungen ^| Schleifen ^| Arrays ^|Eingabe | Functions | Rechnen
+^|Name der Kata ^|Schwierigkeit ^| <<#bedingungen,Bedingungen>> ^| <<#schleifen,Schleifen>> ^| <<#gruppenstrukturen,Arrays>> ^| <<#io,Eingabe>> ^| Functions ^| Rechnen
 
 |http://kata-log.rocks/fizz-buzz-kata[FizzBuzz]
-^|+
-^|X
+^|emoji:beetle[1x]
+^|emoji:heavy_check_mark[1x]
 |
 |
 |
-^| (X)
-^| X
+^| emoji:trophy[1x]
+^| emoji:heavy_check_mark[1x]
 
 |http://codingdojo.org/kata/Diamond[Draw a Diamond]
-^| + + + + +
+^| emoji:snake[1x]
 ^|
-^|X
+^|emoji:heavy_check_mark[1x]
 ^|
 |
 |
 |
 
 |http://kata-log.rocks/tic-tac-toe-kata[Tic Tac Toe]
-^| + + + + +
-^|X
-^|X
-^|X
+^|emoji:elephant[1x]
+^|emoji:heavy_check_mark[1x]
+^|emoji:heavy_check_mark[1x]
+^|emoji:heavy_check_mark[1x]
 |
 |
 |
 
 |http://kata-log.rocks/ohce-kata[ohce]
-^| + + +
-^| X
-^| X
+^| emoji:chicken[1x]
+^| emoji:heavy_check_mark[1x]
+^| emoji:heavy_check_mark[1x]
 ^|
-^| X
-^| (X)
+^| emoji:heavy_check_mark[1x]
+^| emoji:trophy[1x]
 ^|
 
 |http://kata-log.rocks/roman-numerals-kata[Römische Zahlen]
-^| + + + +
+^| emoji:sheep[1x]
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
 ^|
@@ -50,12 +50,12 @@
 ^|
 
 |http://kata-log.rocks/string-calculator-kata[Taschenrechner]
-^| + + + +
+^| emoji:cow[1x]
 ^|
 ^|
 ^|
-^| X
-^| X
-^| X
+^| emoji:heavy_check_mark[1x]
+^| emoji:heavy_check_mark[1x]
+^| emoji:heavy_check_mark[1x]
 
 |===
