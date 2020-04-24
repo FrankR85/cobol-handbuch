@@ -1,4 +1,4 @@
-== DISPLAY "Hallo Münster!"
+== DISPLAY "Hallo Münster 2020!"
 
 Wir schreiben das Jahr 2019 - warum sollten wir jetzt noch COBOL lernen?
 
