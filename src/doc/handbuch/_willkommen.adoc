@@ -1,6 +1,6 @@
 == DISPLAY "Hallo Münster 2020!"
 
-Wir schreiben das Jahr 2019 - warum sollten wir jetzt noch COBOL lernen?
+Wir schreiben das Jahr 2020 - warum sollten wir jetzt noch COBOL lernen?
 
 [caption="COBOL von meiner Mutter!",link=https://twitter.com/grauhut/status/1000017084435312642]
 image::twitter_mutter_cobol.jpg[]
