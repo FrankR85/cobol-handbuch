@@ -58,4 +58,13 @@
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
 
+|<<elfenmemory.adoc#mwst-rumpf, Elfen-Memory>>
+^| emoji:cow[1x]
+^|
+^|
+^|
+^| emoji:heavy_check_mark[1x]
+^| emoji:heavy_check_mark[1x]
+^| emoji:heavy_check_mark[1x]
+
 |===
