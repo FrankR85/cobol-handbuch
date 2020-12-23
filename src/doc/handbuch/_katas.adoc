@@ -58,7 +58,7 @@
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
 
-|<<elfenmemory.adoc, Elfen-Memory>>
+|<<elfenmemory.adoc#, Elfen-Memory>>
 ^| emoji:elephant[1x]
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
@@ -67,7 +67,7 @@
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
 
-|<<krabbenkampf.adoc, Krabbenpoker>>
+|<<krabbenkampf.adoc#, Krabbenpoker>>
 ^| emoji:cow[1x]
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
@@ -76,7 +76,7 @@
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
 
-|<<2020.adoc, Addieren zu 2020>>
+|<<2020.adoc#, Addieren zu 2020>>
 ^| emoji:sheep[1x]
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
