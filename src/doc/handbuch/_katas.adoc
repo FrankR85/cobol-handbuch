@@ -62,8 +62,8 @@
 ^| emoji:elephant[1x]
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
-^| 
 ^| emoji:heavy_check_mark[1x]
+^| 
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
 
@@ -71,8 +71,8 @@
 ^| emoji:cow[1x]
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
-^| 
 ^| emoji:heavy_check_mark[1x]
+^| 
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
 
@@ -82,7 +82,7 @@
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
 ^| emoji:heavy_check_mark[1x]
-^| emoji:heavy_check_mark[1x]
+^| 
 ^| emoji:heavy_check_mark[1x]
 
 |===
