@@ -28,7 +28,12 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+    # Deploy to local repo
+    - name: Deploy
+      uses: s0/git-publish-subdir-action@develop
       env:
-        GITHUB_TOKEN: ${{ github.token }}
+        REPO: self
+        BRANCH: gh-pages
+        FOLDER: target/generated-docs
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
