@@ -29,11 +29,8 @@ jobs:
       run: mvn -B package --file pom.xml
 
     # Deploy to local repo
-    - name: Deploy
-      uses: s0/git-publish-subdir-action@develop
-      env:
-        REPO: self
-        BRANCH: gh-pages
-        FOLDER: target/generated-docs
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Deploy to gh-pages
+      run: |
+        ls
+        git status
 
