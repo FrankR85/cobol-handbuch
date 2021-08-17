@@ -34,5 +34,9 @@ jobs:
         cd target/generated-docs
         mv handbuch.html index.html
         git init
+        git add .
+        git commit -m "deploy to gh pages"
         git status
+        git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY master:gh-pages
+        
 
