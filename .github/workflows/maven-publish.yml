@@ -33,5 +33,6 @@ jobs:
       run: |
         cd target/generated-docs
         mv handbuch.html index.html
+        git init
         git status
 
