@@ -39,6 +39,6 @@ jobs:
         git config --global user.email "you@example.com"
         git config --global user.name "Your Name"
         git commit -m "deploy to gh pages"
-        git push --force https://FrankR85:$GITHUB_TOKEN@github.com/${{ github.repository }} master:gh-pages
+        git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} master:gh-pages
         
 
