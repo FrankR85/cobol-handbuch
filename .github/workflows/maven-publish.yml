@@ -29,8 +29,9 @@ jobs:
       run: mvn -B package --file pom.xml
 
     # Deploy to local repo
-    - uses: actions/checkout@v2
-    - name: Deploy to gh-pages      
+    - name: Deploy to gh-pages    
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         cp -r target/generated-docs/ ghpages/
         mv ghpages/handbuch.html ghpages/index.html
@@ -38,6 +39,6 @@ jobs:
         git config --global user.email "you@example.com"
         git config --global user.name "Your Name"
         git commit -m "deploy to gh pages"
-        git push origin master
+        git remote set-url origin https://FrankR85:$GITHUB_TOKEN@github.com/${{ github.repository }}
         
 
