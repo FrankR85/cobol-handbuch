@@ -31,7 +31,7 @@ jobs:
     # Deploy to local repo
     - name: Deploy to gh-pages
       run: |
-        cp target/generated-docs/ ghpages/
+        cp -r target/generated-docs/ ghpages/
         mv ghpages/handbuch.html ghpages/index.html
         git add .
         git commit -m "deploy to gh pages"
