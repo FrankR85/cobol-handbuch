@@ -31,14 +31,10 @@ jobs:
     # Deploy to local repo
     - name: Deploy to gh-pages
       run: |
-        cd target/generated-docs
-        mv handbuch.html index.html
-        git init
-        git config --global user.email "ghactions@github.com"
-        git config --global user.name "Deploy Agent"
+        cp target/generated-docs/ ghpages/
+        mv ghpages/handbuch.html ghpages/index.html
         git add .
         git commit -m "deploy to gh pages"
-        git status
-        git push --force https://FrankR85:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY master:gh-pages
+        git push origin gh-pages
         
 
