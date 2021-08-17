@@ -39,6 +39,7 @@ jobs:
         git add .
         git commit -m "deploy to gh pages"
         git status
+        git config -l | grep 'http\..*\.extraheader' | cut -d= -f1 | xargs -L1 git config --unset-all
         git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY master:gh-pages
         
 
