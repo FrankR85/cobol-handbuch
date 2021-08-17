@@ -34,6 +34,8 @@ jobs:
         cd target/generated-docs
         mv handbuch.html index.html
         git init
+        git config --global user.email "ghactions@github.com"
+        git config --global user.name "Deploy Agent"
         git add .
         git commit -m "deploy to gh pages"
         git status
