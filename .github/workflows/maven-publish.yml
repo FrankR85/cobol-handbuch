@@ -29,7 +29,8 @@ jobs:
       run: mvn -B package --file pom.xml
 
     # Deploy to local repo
-    - name: Deploy to gh-pages
+    - uses: actions/checkout@v2
+    - name: Deploy to gh-pages      
       run: |
         cp -r target/generated-docs/ ghpages/
         mv ghpages/handbuch.html ghpages/index.html
@@ -37,6 +38,6 @@ jobs:
         git config --global user.email "you@example.com"
         git config --global user.name "Your Name"
         git commit -m "deploy to gh pages"
-        git push origin gh-pages
+        git push origin master
         
 
