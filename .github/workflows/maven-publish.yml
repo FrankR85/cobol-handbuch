@@ -31,6 +31,7 @@ jobs:
     # Deploy to local repo
     - name: Deploy to gh-pages
       run: |
-        ls
+        cd target/generated-docs
+        mv handbuch.html index.html
         git status
 
