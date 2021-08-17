@@ -34,6 +34,8 @@ jobs:
         cp -r target/generated-docs/ ghpages/
         mv ghpages/handbuch.html ghpages/index.html
         git add .
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
         git commit -m "deploy to gh pages"
         git push origin gh-pages
         
