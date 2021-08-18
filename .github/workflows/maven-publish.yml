@@ -28,17 +28,14 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    # Deploy to local repo
-    - name: Deploy to gh-pages    
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
+    -  uses: actions/checkout@v2
+    -  run: |
         cp -r target/generated-docs/ ghpages/
         mv ghpages/handbuch.html ghpages/index.html
         git add .
         git config --global user.email "you@example.com"
         git config --global user.name "Your Name"
         git commit -m "deploy to gh pages"
-        git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} master:gh-pages
+        git push
         
 
