@@ -28,18 +28,16 @@ jobs:
     - name: Build with Maven
       run: |
         mvn -B package --file pom.xml
+        cp -r target/generated-docs/ ghpages/
+        mv ghpages/handbuch.html ghpages/index.html
         
-    - uses: actions/checkout@v2
-      with:
-        clean: false
-        token: ${{secrets.PUSH_TOKEN}}
-    - run: |
-          cp -r target/generated-docs/ ghpages/
-          mv ghpages/handbuch.html ghpages/index.html
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
-          git commit -m "generated"
-          git push
+    # Deploy to local repo
+    - name: Deploy
+      uses: s0/git-publish-subdir-action@develop
+      env:
+        REPO: self
+        BRANCH: gh-pages
+        FOLDER: ghpages
+        GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
         
 
