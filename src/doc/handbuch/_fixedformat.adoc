@@ -15,7 +15,29 @@ Da es zum guten Ton gehört eine Programmiersprache mit einem "Hallo Welt!"-Gru�
         DISPLAY "Hallo Welt!".
        STOP RUN.
 ----
+
 <1> Der Programmname
+
+==== COMPILE und EXEC
+Das Programm könnt ihr ganz schnell in dieser [Web-IDE](https://gitpod.io/#https://github.com/FrankR85/cobol-workspace) ausprobieren.
+
+Unter helloworld/HELLWORLD.CBL findet ihr den Code von oben wieder in ähnlicher Form wieder.
+
+Mit folgendem Befehl könnt ihr das Programm compilieren und ausführen:
+[source,bash]
+----
+cobc -x -j helloworld/HELLWORLD.CBL <1>
+----
+<1> -x erzeugt ein ausführbares Programm und -j führt dieses aus
+
+In der Ausgabe sollte folgendes stehen:
+----
+Hallo WWU!
+----
+
+Auch die folgenden Beispiele könnt ihr nach dem Schema ausprobieren. Erstellt dazu einfach eine entsprechende .CBL-Datei und führt diese analog oben aus.
+
+Wenn ihr die Programme lokal auf eurem Rechner ausführen wollt, haben wir [hier](https://github.com/FrankR85/cobol-workspace#installation) auch eine Anleitung unter Verwendung von Docker geschrieben.
 
 Hierbei ist zu beachten, dass die meisten Legacy-COBOL Anwendungen im *fixed format* geschrieben sind. Das bedeutet, es ist wichtig, auf welcher Spalte ein Befehl oder Zeichen steht:
 
