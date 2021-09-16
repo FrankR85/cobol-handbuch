@@ -1,4 +1,4 @@
-Frank Rehfeldt <frank@internetschach.de>
+Frank Rehfeldt, Leon Westhof
 v0.0.0.2, 2018-2021
 :source-highlighter: highlightjs
 :highlightjsdir: highlight
