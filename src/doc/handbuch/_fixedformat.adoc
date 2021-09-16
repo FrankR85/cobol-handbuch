@@ -21,7 +21,7 @@ Da es zum guten Ton gehört eine Programmiersprache mit einem "Hallo Welt!"-Gru�
 ==== COMPILE und EXEC
 Das Programm könnt ihr ganz schnell in dieser https://gitpod.io/#https://github.com/FrankR85/cobol-workspace[Web-IDE] ausprobieren.
 
-Unter helloworld/HELLWORLD.CBL findet ihr den Code von oben wieder in ähnlicher Form wieder.
+Unter helloworld/HELLWORLD.CBL findet ihr den Code von oben.
 
 Mit folgendem Befehl könnt ihr das Programm compilieren und ausführen:
 [source,bash]
@@ -32,7 +32,7 @@ cobc -x -j helloworld/HELLWORLD.CBL <1>
 
 In der Ausgabe sollte folgendes stehen:
 ----
-Hallo WWU!
+Hallo Welt!
 ----
 
 Auch die folgenden Beispiele könnt ihr nach dem Schema ausprobieren. Erstellt dazu einfach eine entsprechende .CBL-Datei und führt diese analog oben aus.
