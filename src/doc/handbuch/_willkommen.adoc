@@ -1,6 +1,6 @@
-== DISPLAY "Hallo Münster 2021!"
+== DISPLAY "Hallo Münster 2022!"
 
-Wir schreiben das Jahr 2021 - warum sollten wir jetzt noch COBOL lernen?
+Wir schreiben das Jahr 2022 - warum sollten wir jetzt noch COBOL lernen?
 
 [caption="COBOL von meiner Mutter!",link=https://twitter.com/grauhut/status/1000017084435312642]
 image::twitter_mutter_cobol.jpg[]
