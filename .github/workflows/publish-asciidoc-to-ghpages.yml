@@ -12,7 +12,7 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions: 
-      pages: write
+      content: write
 
     steps:
     - uses: actions/checkout@v2
