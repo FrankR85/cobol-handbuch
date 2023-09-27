@@ -19,7 +19,7 @@ mit diesem Aufbau enthält:
 |1|5|BankID|Jede Bank hat eine eindeutige, 5-stellige ID.
 |6|15|Kontonummer|Jedes Konto hat eine - innerhalb der Bank - eindeutige 10-stellige ID.
 |16|25|Betrag|Der Betrag, der dem Konto gutgeschrieben wird. 8 Vorkommastellen, 2 Nachkommastellen, nur positive Werte.
-|28|80|Verwendungszweck|Der Verwendungszweck der Gutschrift kann einen beliebigen Text enthalten.
+|26|80|Verwendungszweck|Der Verwendungszweck der Gutschrift kann einen beliebigen Text enthalten.
 |===
 
 Eine beispielhafte Eingabedatei sähe z.Bsp. so aus:
