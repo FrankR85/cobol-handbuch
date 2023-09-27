@@ -11,9 +11,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    permissions: write-all
 
     steps:
     - uses: actions/checkout@v2
@@ -39,6 +37,6 @@ jobs:
         REPO: self
         BRANCH: gh-pages
         FOLDER: ghpages
-        GITHUB_TOKEN: ${{ secrets.DEPLOY_GHPAGES_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
 
