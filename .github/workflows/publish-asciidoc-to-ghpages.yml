@@ -12,7 +12,9 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions: 
-      repository-projects: write
+      deployments: write
+      contents: write
+      pages: write
 
     steps:
     - uses: actions/checkout@v2
