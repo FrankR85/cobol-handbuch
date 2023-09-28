@@ -1271,7 +1271,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="details">
 <span id="author" class="author">Frank Rehfeldt, Leon Westhof</span><br>
 <span id="revnumber">version 0.0.0.2,</span>
-<span id="revdate">2018-2022</span>
+<span id="revdate">2018-2023</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">COBOL-Handbuch</div>
@@ -1448,7 +1448,7 @@ und stets weiterentwickelt wurde.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">       IDENTIFICATION DIVISION.
-       PROGRAM-ID. halloWelt. <i class="conum" data-value="1"></i><b>(1)</b>
+       PROGRAM-ID. halloWelt. *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
        PROCEDURE DIVISION.
         DISPLAY "Hallo Welt!".
        STOP RUN.</code></pre>
@@ -1512,13 +1512,13 @@ und stets weiterentwickelt wurde.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">                                                                        <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">                                                                        *&gt;<i class="conum" data-value="1"></i><b>(1)</b>
 ------*A---B---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+-------
-      * Eine Kommentarzeile <i class="conum" data-value="2"></i><b>(2)</b>
-       IDENTIFICATION DIVISION. <i class="conum" data-value="3"></i><b>(3)</b>
+      * Eine Kommentarzeile *&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+       IDENTIFICATION DIVISION. *&gt; <i class="conum" data-value="3"></i><b>(3)</b>
        PROGRAM-ID. halloWelt.                                           DOKU
        PROCEDURE DIVISION.
-           DISPLAY "Hallo Welt!". <i class="conum" data-value="4"></i><b>(4)</b>
+           DISPLAY "Hallo Welt!". *&gt; <i class="conum" data-value="4"></i><b>(4)</b>
        STOP RUN.</code></pre>
 </div>
 </div>
@@ -1625,12 +1625,12 @@ Zur Erinnerung hier nochmal der Code:</p>
 
        PROCEDURE DIVISION.
            PERFORM CALCULATE-MWST
-           GOBACK
-           .
+           GOBACK.
+
        CALCULATE-MWST SECTION.
            COMPUTE BRUTTO-BETRAG ROUNDED
                  = NETTO-BETRAG * (1 + MWST)
-           .
+           END-COMPUTE
            EXIT.
 
        END PROGRAM MWST.</code></pre>
@@ -1740,20 +1740,20 @@ Nehmen wir den Programmrumpf aus der <a href="aufgaben.html#mwst-rumpf">Mehrwert
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">       IDENTIFICATION DIVISION. <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">       IDENTIFICATION DIVISION. *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
        PROGRAM-ID. MWST.
-       ENVIRONMENT DIVISION. <i class="conum" data-value="1"></i><b>(1)</b>
-       DATA DIVISION.  <i class="conum" data-value="1"></i><b>(1)</b>
+       ENVIRONMENT DIVISION. *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+       DATA DIVISION.  *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
 
        WORKING-STORAGE SECTION.
         01  NETTO-BETRAG           PIC 999V99.
         01  BRUTTO-BETRAG          PIC 999.99.
         01  MWST                   PIC V999 VALUE .19.
 
-       PROCEDURE DIVISION.  <i class="conum" data-value="1"></i><b>(1)</b>
+       PROCEDURE DIVISION.  *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
         PERFORM CALCULATE-MWST
-        GOBACK
-           .
+        GOBACK.
+
        CALCULATE-MWST SECTION.
       *    Noch nicht implementiert
            .
@@ -1915,8 +1915,8 @@ Das könnte man so erreichen:</p>
           DISPLAY "Hallo. Bitte Alter eingeben:"
           ACCEPT BENUTZER-ALTER
           DISPLAY "Sie sind " BENUTZER-ALTER
-          GOBACK
-          .
+          GOBACK.
+
        END PROGRAM COMMAND.</code></pre>
 </div>
 </div>
@@ -1957,10 +1957,10 @@ Wenn wir zu einem Benutzer seinen Vornamen, Nachnamen und das Alter speichern wo
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">01 BENUTZER.                     <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">01 BENUTZER.                     *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
   05 VORNAME        PIC X(30).
   05 NACHNAME       PIC X(30).
-  05 B-ALTER        PIC 999.     <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+  05 B-ALTER        PIC 999.     *&gt; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1983,7 +1983,7 @@ Wenn wir zu einem Benutzer seinen Vornamen, Nachnamen und das Alter speichern wo
 <pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">01 ADMIN.
   05 VORNAME        PIC X(30).
   05 NACHNAME       PIC X(30).
-  05 A-ALTER        PIC 999.    <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+  05 A-ALTER        PIC 999.    *&gt; <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -2016,12 +2016,11 @@ WORKING-STORAGE SECTION.
   05 A-ALTER        PIC 999.
 
 PROCEDURE DIVISION.
-    MOVE "BOFH"      <i class="conum" data-value="1"></i><b>(1)</b>
+    MOVE "BOFH"      *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
       TO VORNAME
 
     DISPLAY VORNAME
-    GOBACK
-   .
+    GOBACK.
 END PROGRAM DATADEFS.</code></pre>
 </div>
 </div>
@@ -2054,7 +2053,7 @@ Der <code><code>VORNAME</code></code> in der Struktur <code><code>BENUTZER</code
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">MOVE "BOFH"
-  TO VORNAME IN ADMIN <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+  TO VORNAME IN ADMIN *&gt; <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -2269,7 +2268,7 @@ tatsächlich die gleichen Felder mit der gleichen Länge enthalten.</p>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">01 ADMIN.
   05 VORNAME        PIC X(30).
-  05 A-ALTER        PIC 999.    <i class="conum" data-value="1"></i><b>(1)</b>
+  05 A-ALTER        PIC 999.    *&gt;<i class="conum" data-value="1"></i><b>(1)</b>
   05 NACHNAME       PIC X(30).</code></pre>
 </div>
 </div>
@@ -2352,8 +2351,7 @@ PROCEDURE DIVISION.
 
     DISPLAY TEMP-FELD
 
-    GOBACK
-   .
+    GOBACK.
 END PROGRAM DATADEFS.</code></pre>
 </div>
 </div>
@@ -2425,8 +2423,7 @@ PROCEDURE DIVISION.
        DISPLAY "Nicht numerisch"
     END-IF
 
-    GOBACK
-   .
+    GOBACK.
 END PROGRAM DATADEFS.</code></pre>
 </div>
 </div>
@@ -2534,8 +2531,8 @@ Diesen beschränkten Wertebereich können wir nun z.Bsp. so modellieren:</p>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">01 BENUTZER.
     ...
-    05 BSTATUS        PIC X VALUE SPACE. <i class="conum" data-value="1"></i><b>(1)</b>
-      88 NORMAL             VALUE SPACE. <i class="conum" data-value="2"></i><b>(2)</b>
+    05 BSTATUS        PIC X VALUE SPACE. *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+      88 NORMAL             VALUE SPACE. *&gt; <i class="conum" data-value="2"></i><b>(2)</b>
       88 PREMIUM            VALUE 'P'.
       88 GESPERRT           VALUE 'G'.</code></pre>
 </div>
@@ -3011,17 +3008,16 @@ ENVIRONMENT DIVISION.
 DATA DIVISION.
 
 WORKING-STORAGE SECTION.
-01 TEMP-ZAEHLER PIC 99. <i class="conum" data-value="1"></i><b>(1)</b>
+01 TEMP-ZAEHLER PIC 99. *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
 
 PROCEDURE DIVISION.
-   PERFORM VARYING TEMP-ZAEHLER FROM 1 BY 1 <i class="conum" data-value="2"></i><b>(2)</b>
-    UNTIL TEMP-ZAEHLER &gt; 10       <i class="conum" data-value="3"></i><b>(3)</b>
+   PERFORM VARYING TEMP-ZAEHLER FROM 1 BY 1 *&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+    UNTIL TEMP-ZAEHLER &gt; 10       *&gt; <i class="conum" data-value="3"></i><b>(3)</b>
 
      DISPLAY TEMP-ZAEHLER
    END-PERFORM
 
-   GOBACK
-   .
+   GOBACK.
 END PROGRAM DATADEFS.</code></pre>
 </div>
 </div>
@@ -3191,12 +3187,12 @@ strukturiert werden.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">       AUSGABE-ZAHLEN-1-BIS-10 SECTION. <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">       AUSGABE-ZAHLEN-1-BIS-10 SECTION. *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
        PERFORM WITH TEST AFTER VARYING TEMP-ZAEHLER FROM 1 BY 1
         UNTIL TEMP-ZAEHLER = 10
           DISPLAY TEMP-ZAEHLER
        END-PERFORM
-           EXIT. <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+           EXIT. *&gt; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -3220,8 +3216,7 @@ an die Stelle zurückkehrt, wo die <code><code>SECTION</code></code> aufgerufen 
 <pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">PROCEDURE DIVISION.
    PERFORM AUSGABE-ZAHLEN-1-BIS-10
 
-   GOBACK
-   .</code></pre>
+   GOBACK.</code></pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -3262,8 +3257,7 @@ was das Programm macht. Es ist nicht nötig, erst Sinn und Zweck der Schleife zu
           DISPLAY TEMP-ZAEHLER
        END-PERFORM
 
-       GOBACK
-       .</code></pre>
+       GOBACK.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3283,9 +3277,9 @@ Schlüsselwort definiert:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">       DAS-IST-EIN-PARAGRAPH.       <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">       DAS-IST-EIN-PARAGRAPH.       *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
            DISPLAY "Herzlich Willkommen."
-           .                        <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+           .                        *&gt; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -3339,8 +3333,8 @@ DATA DIVISION.
 PROCEDURE DIVISION.
    PERFORM ICH-BIN-EIN-PARAGRAPH
    PERFORM ICH-BIN-AUCH-EIN-PARAGRAPH
-   GOBACK
-   .
+   GOBACK.
+
 ICH-BIN-EIN-PARAGRAPH.
    DISPLAY "Hallo,"
    .
@@ -3373,12 +3367,12 @@ DATA DIVISION.
 PROCEDURE DIVISION.
    PERFORM ICH-BIN-EINE-SECTION
    PERFORM ICH-BIN-AUCH-EINE-SECTION
-   GOBACK
-   .
-ICH-BIN-EINE-SECTION SECTION. <i class="conum" data-value="1"></i><b>(1)</b>
+   GOBACK.
+
+ICH-BIN-EINE-SECTION SECTION. *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
    DISPLAY "Hallo,"
    .
-ICH-BIN-AUCH-EINE-SECTION SECTION. <i class="conum" data-value="1"></i><b>(1)</b>
+ICH-BIN-AUCH-EINE-SECTION SECTION. *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
    DISPLAY "Welt!"
    .
 END PROGRAM DATADEFS.</code></pre>
@@ -3423,11 +3417,11 @@ PROGRAM-ID. DATADEFS.
 ENVIRONMENT DIVISION.
 DATA DIVISION.
 PROCEDURE DIVISION.
-   PERFORM ICH-BIN-EINE-SECTION  <i class="conum" data-value="1"></i><b>(1)</b>
+   PERFORM ICH-BIN-EINE-SECTION  *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
    PERFORM ICH-BIN-EIN-PARAGRAPH
    PERFORM ICH-BIN-AUCH-EIN-PARAGRAPH
-   GOBACK
-   .
+   GOBACK.
+
 ICH-BIN-EINE-SECTION SECTION.
    DISPLAY "Herzlich Willkommen!"
    .
@@ -3516,7 +3510,7 @@ einen <code><code>EXIT</code></code>-Befehl, also z.Bsp:</p>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-cobol hljs" data-lang="cobol">ICH-BIN-EINE-SECTION SECTION.
    DISPLAY "Herzlich Willkommen!"
-   EXIT. <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+   EXIT. *&gt; <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -3627,12 +3621,12 @@ Tatsächlich ist das auch eines der Haupteinsatzgebiete von <strong>COBOL</stron
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-             SELECT STUDENT ASSIGN TO 'students.txt' <i class="conum" data-value="1"></i><b>(1)</b>
+             SELECT STUDENT ASSIGN TO 'students.txt' *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
              ORGANIZATION IS LINE SEQUENTIAL.
        DATA DIVISION.
           FILE SECTION.
           FD STUDENT.
-          01 STUDENT-FILE. <i class="conum" data-value="2"></i><b>(2)</b>
+          01 STUDENT-FILE. *&gt; <i class="conum" data-value="2"></i><b>(2)</b>
              05 STUDENT-ID PIC 9(5).
              05 STUDENT-NAME PIC X(20).
        WORKING-STORAGE SECTION.
@@ -3642,15 +3636,14 @@ Tatsächlich ist das auch eines der Haupteinsatzgebiete von <strong>COBOL</stron
        01 WS-EOF PIC X(1).
        PROCEDURE DIVISION.
            OPEN INPUT STUDENT.
-              PERFORM UNTIL WS-EOF="Y" <i class="conum" data-value="3"></i><b>(3)</b>
-                 READ STUDENT INTO WS-STUDENT <i class="conum" data-value="4"></i><b>(4)</b>
-                   AT END MOVE "Y" TO WS-EOF <i class="conum" data-value="5"></i><b>(5)</b>
-                   NOT AT END DISPLAY WS-STUDENT <i class="conum" data-value="6"></i><b>(6)</b>
+              PERFORM UNTIL WS-EOF="Y" *&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+                 READ STUDENT INTO WS-STUDENT *&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+                   AT END MOVE "Y" TO WS-EOF *&gt; <i class="conum" data-value="5"></i><b>(5)</b>
+                   NOT AT END DISPLAY WS-STUDENT *&gt; <i class="conum" data-value="6"></i><b>(6)</b>
                  END-READ
               END-PERFORM
            CLOSE STUDENT.
-           GOBACK
-          .
+           GOBACK.
        END PROGRAM IO.</code></pre>
 </div>
 </div>
@@ -3703,7 +3696,7 @@ Wir müssen nun also wie vorhin die Eingabedatei Satz für Satz einlesen und dan
        FILE-CONTROL.
              SELECT STUDENT-IN ASSIGN TO 'students.txt'
              ORGANIZATION IS LINE SEQUENTIAL.
-             SELECT STUDENT-OUT ASSIGN TO 'output.txt' <i class="conum" data-value="1"></i><b>(1)</b>
+             SELECT STUDENT-OUT ASSIGN TO 'output.txt' *&gt; <i class="conum" data-value="1"></i><b>(1)</b>
              ORGANIZATION IS LINE SEQUENTIAL.
        DATA DIVISION.
           FILE SECTION.
@@ -3713,29 +3706,29 @@ Wir müssen nun also wie vorhin die Eingabedatei Satz für Satz einlesen und dan
              05 STUDENT-NAME PIC X(20).
           FD STUDENT-OUT.
           01 STUDENT-OUT-FILE.
-             05 STUDENT-NAME PIC X(20). <i class="conum" data-value="2"></i><b>(2)</b>
+             05 STUDENT-NAME PIC X(20). *&gt; <i class="conum" data-value="2"></i><b>(2)</b>
        WORKING-STORAGE SECTION.
        01 WS-STUDENT.
           05 WS-STUDENT-ID PIC 9(05).
           05 WS-STUDENT-NAME PIC X(20).
        01 WS-EOF PIC X(1).
        PROCEDURE DIVISION.
-           OPEN OUTPUT STUDENT-OUT <i class="conum" data-value="3"></i><b>(3)</b>
+           OPEN OUTPUT STUDENT-OUT *&gt; <i class="conum" data-value="3"></i><b>(3)</b>
            OPEN INPUT STUDENT-IN
               PERFORM UNTIL WS-EOF="Y"
                  READ STUDENT-IN INTO WS-STUDENT
                    AT END MOVE "Y" TO WS-EOF
                    NOT AT END
                       MOVE WS-STUDENT-NAME
-                        TO STUDENT-NAME IN STUDENT-OUT-FILE <i class="conum" data-value="4"></i><b>(4)</b>
-                      WRITE STUDENT-OUT-FILE FROM STUDENT-OUT-FILE <i class="conum" data-value="5"></i><b>(5)</b>
+                        TO STUDENT-NAME IN STUDENT-OUT-FILE *&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+                      WRITE STUDENT-OUT-FILE FROM STUDENT-OUT-FILE *&gt; <i class="conum" data-value="5"></i><b>(5)</b>
                  END-READ
               END-PERFORM
            CLOSE STUDENT-IN
-           CLOSE STUDENT-OUT <i class="conum" data-value="6"></i><b>(6)</b>
+           CLOSE STUDENT-OUT *&gt; <i class="conum" data-value="6"></i><b>(6)</b>
 
-           GOBACK
-          .
+           GOBACK.
+
        END PROGRAM IO.</code></pre>
 </div>
 </div>
@@ -3935,7 +3928,7 @@ Wir müssen nun also wie vorhin die Eingabedatei Satz für Satz einlesen und dan
 <div id="footer">
 <div id="footer-text">
 Version 0.0.0.2<br>
-Last updated 2023-09-27 12:09:10 UTC
+Last updated 2023-09-28 12:52:09 UTC
 </div>
 </div>
 <link rel="stylesheet" href="highlight/styles/github.min.css">
