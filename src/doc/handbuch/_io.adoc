@@ -12,12 +12,12 @@ Wir wollen uns anschauen, wie wir eine einfache Datei, in der Datensätze über 
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-             SELECT STUDENT ASSIGN TO 'students.txt' <1>
+             SELECT STUDENT ASSIGN TO 'students.txt' *> <1>
              ORGANIZATION IS LINE SEQUENTIAL.
        DATA DIVISION.
           FILE SECTION.
           FD STUDENT.
-          01 STUDENT-FILE. <2>
+          01 STUDENT-FILE. *> <2>
              05 STUDENT-ID PIC 9(5).
              05 STUDENT-NAME PIC X(20).
        WORKING-STORAGE SECTION.
@@ -27,15 +27,14 @@ Wir wollen uns anschauen, wie wir eine einfache Datei, in der Datensätze über 
        01 WS-EOF PIC X(1).
        PROCEDURE DIVISION.
            OPEN INPUT STUDENT.
-              PERFORM UNTIL WS-EOF="Y" <3>
-                 READ STUDENT INTO WS-STUDENT <4>
-                   AT END MOVE "Y" TO WS-EOF <5>
-                   NOT AT END DISPLAY WS-STUDENT <6>
+              PERFORM UNTIL WS-EOF="Y" *> <3>
+                 READ STUDENT INTO WS-STUDENT *> <4>
+                   AT END MOVE "Y" TO WS-EOF *> <5>
+                   NOT AT END DISPLAY WS-STUDENT *> <6>
                  END-READ
               END-PERFORM
            CLOSE STUDENT.
-           GOBACK
-          .
+           GOBACK.
        END PROGRAM IO.
 ----
 <1> Hier wird der Dateiname fixiert.
@@ -64,7 +63,7 @@ Wir müssen nun also wie vorhin die Eingabedatei Satz für Satz einlesen und dan
        FILE-CONTROL.
              SELECT STUDENT-IN ASSIGN TO 'students.txt'
              ORGANIZATION IS LINE SEQUENTIAL.
-             SELECT STUDENT-OUT ASSIGN TO 'output.txt' <1>
+             SELECT STUDENT-OUT ASSIGN TO 'output.txt' *> <1>
              ORGANIZATION IS LINE SEQUENTIAL.
        DATA DIVISION.
           FILE SECTION.
@@ -74,29 +73,29 @@ Wir müssen nun also wie vorhin die Eingabedatei Satz für Satz einlesen und dan
              05 STUDENT-NAME PIC X(20).
           FD STUDENT-OUT.
           01 STUDENT-OUT-FILE.
-             05 STUDENT-NAME PIC X(20). <2>
+             05 STUDENT-NAME PIC X(20). *> <2>
        WORKING-STORAGE SECTION.
        01 WS-STUDENT.
           05 WS-STUDENT-ID PIC 9(05).
           05 WS-STUDENT-NAME PIC X(20).
        01 WS-EOF PIC X(1).
        PROCEDURE DIVISION.
-           OPEN OUTPUT STUDENT-OUT <3>
+           OPEN OUTPUT STUDENT-OUT *> <3>
            OPEN INPUT STUDENT-IN
               PERFORM UNTIL WS-EOF="Y"
                  READ STUDENT-IN INTO WS-STUDENT
                    AT END MOVE "Y" TO WS-EOF
                    NOT AT END
                       MOVE WS-STUDENT-NAME
-                        TO STUDENT-NAME IN STUDENT-OUT-FILE <4>
-                      WRITE STUDENT-OUT-FILE FROM STUDENT-OUT-FILE <5>
+                        TO STUDENT-NAME IN STUDENT-OUT-FILE *> <4>
+                      WRITE STUDENT-OUT-FILE FROM STUDENT-OUT-FILE *> <5>
                  END-READ
               END-PERFORM
            CLOSE STUDENT-IN
-           CLOSE STUDENT-OUT <6>
+           CLOSE STUDENT-OUT *> <6>
 
-           GOBACK
-          .
+           GOBACK.
+           
        END PROGRAM IO.
 ----
 <1> Wir definieren eine weitere Datei für die Ausgabe.

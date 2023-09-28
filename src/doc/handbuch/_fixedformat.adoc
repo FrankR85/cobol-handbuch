@@ -10,7 +10,7 @@ Da es zum guten Ton gehört eine Programmiersprache mit einem "Hallo Welt!"-Gru�
 [source,cobol]
 ----
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. halloWelt. // <1>
+       PROGRAM-ID. halloWelt. *> <1>
        PROCEDURE DIVISION.
         DISPLAY "Hallo Welt!".
        STOP RUN.
@@ -47,13 +47,13 @@ Eine Zeile klassisches Cobol ist 80 Zeichen lang, denn so viele Zeichen passen a
 
 [source,cobol]
 ----
-                                                                        //<1>
+                                                                        *><1>
 ------*A---B---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+-------
-      * Eine Kommentarzeile // <2>
-       IDENTIFICATION DIVISION. // <3>
+      * Eine Kommentarzeile *> <2>
+       IDENTIFICATION DIVISION. *> <3>
        PROGRAM-ID. halloWelt.                                           DOKU
        PROCEDURE DIVISION.
-           DISPLAY "Hallo Welt!". // <4>
+           DISPLAY "Hallo Welt!". *> <4>
        STOP RUN.
 ----
 <1> Die Spalten 1 bis 6 sowie 73 bis 80 werden vom Compiler ignoriert und können zu Dokumentationszwecken genutzt werden.footnote:[Traditionell wird einer dieser beiden Bereiche für Zeilennummern verwendet, damit man seinen Lochkartenstapel wieder sortieren (lassen) kann, wenn er mal runterfällt.]
