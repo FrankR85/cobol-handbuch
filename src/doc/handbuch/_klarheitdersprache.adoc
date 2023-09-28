@@ -23,12 +23,12 @@ Zur Erinnerung hier nochmal der Code:
 
        PROCEDURE DIVISION.
            PERFORM CALCULATE-MWST
-           GOBACK
-           .
+           GOBACK.
+           
        CALCULATE-MWST SECTION.
            COMPUTE BRUTTO-BETRAG ROUNDED
                  = NETTO-BETRAG * (1 + MWST)
-           .
+           END-COMPUTE
            EXIT.
 
        END PROGRAM MWST.

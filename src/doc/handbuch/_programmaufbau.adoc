@@ -4,20 +4,20 @@ wir uns mal die Details genauer anschauen.
 Nehmen wir den Programmrumpf aus der <<aufgaben.adoc#mwst-rumpf, Mehrwertsteuer-Übung>>:
 [source,cobol]
 ----
-       IDENTIFICATION DIVISION. // <1>
+       IDENTIFICATION DIVISION. *> <1>
        PROGRAM-ID. MWST.
-       ENVIRONMENT DIVISION. // <1>
-       DATA DIVISION.  // <1>
+       ENVIRONMENT DIVISION. *> <1>
+       DATA DIVISION.  *> <1>
 
        WORKING-STORAGE SECTION.
         01  NETTO-BETRAG           PIC 999V99.
         01  BRUTTO-BETRAG          PIC 999.99.
         01  MWST                   PIC V999 VALUE .19.
 
-       PROCEDURE DIVISION.  // <1>
+       PROCEDURE DIVISION.  *> <1>
         PERFORM CALCULATE-MWST
-        GOBACK
-           .
+        GOBACK.
+
        CALCULATE-MWST SECTION.
       *    Noch nicht implementiert
            .
@@ -118,8 +118,8 @@ Was wäre die Ausgabe dieses Programms?
           DISPLAY "Hallo. Bitte Alter eingeben:"
           ACCEPT BENUTZER-ALTER
           DISPLAY "Sie sind " BENUTZER-ALTER
-          GOBACK
-          .
+          GOBACK.
+
        END PROGRAM COMMAND.
 ----
 Gibt ein Benutzer hier ```100``` ein, so würde das Programm antworten:
@@ -142,10 +142,10 @@ Eine weitere wichtige Möglichkeit, Variablen in COBOL zu definieren, sind _Grup
 Wenn wir zu einem Benutzer seinen Vornamen, Nachnamen und das Alter speichern wollen, können wir uns eine Struktur ```BENUTZER``` wie folgt anlegen:
 [source,cobol]
 ----
-01 BENUTZER.                     // <1>
+01 BENUTZER.                     *> <1>
   05 VORNAME        PIC X(30).
   05 NACHNAME       PIC X(30).
-  05 B-ALTER        PIC 999.     // <2>
+  05 B-ALTER        PIC 999.     *> <2>
 ----
 <1> Hier wird die Struktur definiert. Beachte, dass hier keine ```PICTURE```-Bedingung steht.
 <2> Da ```ALTER``` ein Befehl in COBOL ist, ist die Bezeichnung reserviert und wir können keine Variable ```ALTER``` nennen.
@@ -156,7 +156,7 @@ Angenommen, wir haben noch einen Admin und müssen auch seinen Vornamen, Nachnam
 01 ADMIN.
   05 VORNAME        PIC X(30).
   05 NACHNAME       PIC X(30).
-  05 A-ALTER        PIC 999.    // <1>
+  05 A-ALTER        PIC 999.    *> <1>
 ----
 <1> Das Feld heißt nun nicht ```B-ALTER```, sondern ```A-ALTER```.
 
@@ -180,12 +180,11 @@ WORKING-STORAGE SECTION.
   05 A-ALTER        PIC 999.
 
 PROCEDURE DIVISION.
-    MOVE "BOFH"      // <1>
+    MOVE "BOFH"      *> <1>
       TO VORNAME
 
     DISPLAY VORNAME
-    GOBACK
-   .
+    GOBACK.
 END PROGRAM DATADEFS.
 ----
 <1> Der Variable ```VORNAME``` wird der Wert ```BOFH``` zugewiesen.
@@ -204,7 +203,7 @@ Wir müssen ihm auf die Sprünge helfen und unsere Variable *qualifizieren*:
 [source,cobol]
 ----
 MOVE "BOFH"
-  TO VORNAME IN ADMIN // <1>
+  TO VORNAME IN ADMIN *> <1>
 ----
 <1> Das ```IN ADMIN``` sagt dem Compiler *eindeutig*, welcher ```VORNAME``` gemeint ist.
 

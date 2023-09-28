@@ -15,12 +15,12 @@ Wir könnten die Schleife in eine eigene ```SECTION``` auslagern:
 
 [source,cobol]
 ----
-       AUSGABE-ZAHLEN-1-BIS-10 SECTION. <1>
+       AUSGABE-ZAHLEN-1-BIS-10 SECTION. *> <1>
        PERFORM WITH TEST AFTER VARYING TEMP-ZAEHLER FROM 1 BY 1
         UNTIL TEMP-ZAEHLER = 10
           DISPLAY TEMP-ZAEHLER
        END-PERFORM
-           EXIT. <2>
+           EXIT. *> <2>
 ----
 <1> Wir definieren eine ```SECTION``` mit dem Namen ```AUSGABE-ZAHLEN-1-BIS-10```
 <2> Am Ende einer ```SECTION``` sollte ein ```EXIT```-Befehl stehen, damit der Programmfluss
@@ -33,8 +33,7 @@ Und diese dann in der ```PROCEDURE DIVISION``` aufrufen:
 PROCEDURE DIVISION.
    PERFORM AUSGABE-ZAHLEN-1-BIS-10
 
-   GOBACK
-   .
+   GOBACK.
 ----
 
 [TIP]
@@ -60,8 +59,7 @@ Man könnte ja auch Kommentare verwenden, um die Logik zu beschreiben, z.Bsp.:
           DISPLAY TEMP-ZAEHLER
        END-PERFORM
 
-       GOBACK
-       .
+       GOBACK.
 ----
 Was ist der Nachteil an Kommentaren im Code?
 ====
@@ -72,9 +70,9 @@ Diese verhalten sich so ähnlich wie eine ```SECTION```, werden aber ohne ein be
 Schlüsselwort definiert:
 [source,cobol]
 ----
-       DAS-IST-EIN-PARAGRAPH.       <1>
+       DAS-IST-EIN-PARAGRAPH.       *> <1>
            DISPLAY "Herzlich Willkommen."
-           .                        <2>
+           .                        *> <2>
 ----
 <1> Die Definition eines ```Paragraphen``` besteht nur aus seinem Namen und einem Punkt.
 <2> Ein Paragraph endet immer beim nächsten Punkt.
@@ -102,8 +100,8 @@ DATA DIVISION.
 PROCEDURE DIVISION.
    PERFORM ICH-BIN-EIN-PARAGRAPH
    PERFORM ICH-BIN-AUCH-EIN-PARAGRAPH
-   GOBACK
-   .
+   GOBACK.
+
 ICH-BIN-EIN-PARAGRAPH.
    DISPLAY "Hallo,"
    .
@@ -130,12 +128,12 @@ DATA DIVISION.
 PROCEDURE DIVISION.
    PERFORM ICH-BIN-EINE-SECTION
    PERFORM ICH-BIN-AUCH-EINE-SECTION
-   GOBACK
-   .
-ICH-BIN-EINE-SECTION SECTION. <1>
+   GOBACK.
+
+ICH-BIN-EINE-SECTION SECTION. *> <1>
    DISPLAY "Hallo,"
    .
-ICH-BIN-AUCH-EINE-SECTION SECTION. <1>
+ICH-BIN-AUCH-EINE-SECTION SECTION. *> <1>
    DISPLAY "Welt!"
    .
 END PROGRAM DATADEFS.
@@ -159,11 +157,11 @@ PROGRAM-ID. DATADEFS.
 ENVIRONMENT DIVISION.
 DATA DIVISION.
 PROCEDURE DIVISION.
-   PERFORM ICH-BIN-EINE-SECTION  <1>
+   PERFORM ICH-BIN-EINE-SECTION  *> <1>
    PERFORM ICH-BIN-EIN-PARAGRAPH
    PERFORM ICH-BIN-AUCH-EIN-PARAGRAPH
-   GOBACK
-   .
+   GOBACK.
+
 ICH-BIN-EINE-SECTION SECTION.
    DISPLAY "Herzlich Willkommen!"
    .
@@ -225,7 +223,7 @@ einen ```EXIT```-Befehl, also z.Bsp:
 ----
 ICH-BIN-EINE-SECTION SECTION.
    DISPLAY "Herzlich Willkommen!"
-   EXIT. <1>
+   EXIT. *> <1>
 ----
 <1> Hat das ```EXIT```-Keyword den gewünschten Effekt?
 
