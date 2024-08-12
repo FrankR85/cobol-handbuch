@@ -1,5 +1,5 @@
 Frank Rehfeldt, Leon Westhof
-v0.0.0.2, 2018-2023
+v1.0.0.2, 2018-2024
 :source-highlighter: highlightjs
 :highlightjsdir: highlight
 :imagesdir-src: images
